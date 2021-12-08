@@ -12,8 +12,7 @@
         [string]$LogAll,
         [string]$LogError,
 
-        [switch]$ShowHost = $false,
-        [switch]$EasterEgg
+        [switch]$ShowHost = $false
     )
     
     BEGIN {
@@ -483,16 +482,6 @@
 
         Write-Verbose "   >> END BLOCK FINISHED <<   "
         Write-Verbose "       Script Completed       "
-
-        If ($EasterEgg) {
-        Write-Verbose "                              "
-        Write-Verbose "                <('  '<)      "
-        Write-Verbose "                              "
-        Write-Verbose "           ^(' ')^            "
-        Write-Verbose "                              "
-        Write-Verbose "      (>' ')>                 "
-        Write-Verbose "                              "
-        }
     }
 }
 
