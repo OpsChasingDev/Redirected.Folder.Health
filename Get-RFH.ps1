@@ -13,7 +13,7 @@
         [string]$LogError,
 
         [switch]$ShowHost = $false,
-        [switch]$EasterEgg = $false
+        [switch]$EasterEgg = $false #but with a twist
     )
     
     BEGIN {
