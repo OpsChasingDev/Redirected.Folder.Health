@@ -5,9 +5,11 @@
         [Parameter(ValueFromPipeline=$true)]
         [string[]]$ComputerName,
 
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory)]
         [ValidateSet("D","O","W","M","P","V","F","A","S","C","L","H","G")]
         [string[]]$Library,
+
+        [string[]]$ExcludeAccount,
 
         [string]$LogAll,
         [string]$LogError,
@@ -67,7 +69,9 @@
             $ObjUser | Add-Member -MemberType NoteProperty -Name "Name" -Value $a.SamAccountName
             $ObjUser | Add-Member -MemberType NoteProperty -Name "SID" -Value ($a.SID).Value
 
-            $UserCollection += $ObjUser
+            If ($ExcludeAccount -notcontains $a.SamAccountName) {
+                $UserCollection += $ObjUser
+            }
         }
             Write-Verbose "Custom user object information gathered and completed"
 
@@ -486,7 +490,12 @@
 }
 
 <#
-    - add in account exclusion options (needs to take multiple values)
+    - add in account exclusion options (needs to take multiple values) (continue testing this)
+    - address issue with not being able to supply multiple values to the ComputerName parameter
+        - currently the function works fine while feeding multiple machines in from the pipeline, but the ability to use other methods to supply that input for multiple values does not work
+        - get the tool to work for something like
+            Get-RFH -ComputerName sl-computer-001,sl-computer-002 -Library D
+            Get-RFH -ComputerName (Get-Content C:\Test\Computers.txt) -Library D
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
         - param [switch]SendEmail
         - param [string]ToAddress
