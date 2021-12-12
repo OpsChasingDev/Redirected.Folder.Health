@@ -24,8 +24,8 @@ Future goals for the project that make this different from the original (only or
 8) (DONE) Added functionality to check more user library locations for redirections such as appdata
 9) (DONE) Added messaging for running as Verbose in RFH
 10) New function for actively changing redirection settings in the user's registry
-11)	Allow multiple accounts to be exluded
-12)	Change function name of Schedule-RedirectedFolderHealth to Set-RFHSchedule
+11) (DONE) Allow multiple accounts to be exluded
+12) Change function name of Schedule-RedirectedFolderHealth to Set-RFHSchedule
 13) Change parameter ComputerName to use the ValidateNotNullOrEmpty instead of Mandatory and then set the default value of ComputerName to $env:ComputerName
 14) Add parameter validation and defaults to other parameters so that defaults are accepted that can be run on the localhost as a quick local tool
 15) Add ValidateScript parameter option to the regular expression defining an email address so that a meaningful error message is spit out instead of the regular expression's syntax which nobody will know how to read
