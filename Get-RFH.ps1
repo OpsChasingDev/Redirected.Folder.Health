@@ -14,7 +14,16 @@
         [string]$LogAll,
         [string]$LogError,
 
-        [switch]$ShowHost = $false
+        [switch]$ShowHost = $false,
+
+        [mailaddress[]]$SendEmail,
+        [mailaddress[]]$From,
+        [mailaddress[]]$CC,
+        [mailaddress[]]$BCC,
+        [string]$SmtpServer,
+        [int]$Port,
+        [switch]$UseSSL = $false
+
     )
     
     BEGIN {
@@ -493,12 +502,15 @@
 
 <#
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
-        - param [switch]SendEmail
-        - param [string]ToAddress
-        - param [string]FromAddress
+        - param [string[]]SendEmail - the value taken will be the 'to' address
+        - param [string]From
         - param [string]SmtpServer
         - param [int]Port
+        - param [string[]]CC
+        - param [string[]]BCC
         - param [switch]UseSSL
     - parameter set will need to be made so that the logging options are required if the email option is selected
+    - email options will use both the output from the LogAll and LogError parameters to send as attachments, based on which of those logging options are specified
+    - after email is sent, the log files used will be removed
 #>
 
