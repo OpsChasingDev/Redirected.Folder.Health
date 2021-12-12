@@ -445,7 +445,7 @@
         # outputs the collection of results as specified, containing all computers and all users found on each computer
         If ($LogAll) {
             # writes all findings to csv
-            Write-Output $ResultCollection | Export-Csv -Path $LogAll -NoTypeInformation
+            Write-Output $ResultCollection | Select-Object $PropertyOutput | Export-Csv -Path $LogAll -NoTypeInformation
         }
         If ($LogError) {
             # writes only problems to csv
@@ -492,7 +492,6 @@
 }
 
 <#
-    - address the difference in behavior with the LogAll param vs the LogError param - LogError currently only outputs columns for the libraries specified by the user, but LogAll shows all of them - LogAll should behave like LogError in this manner
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
         - param [switch]SendEmail
         - param [string]ToAddress
