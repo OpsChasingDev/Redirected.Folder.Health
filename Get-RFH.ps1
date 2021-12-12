@@ -492,12 +492,6 @@
 }
 
 <#
-    - add in account exclusion options (needs to take multiple values) (continue testing this)
-    - address issue with not being able to supply multiple values to the ComputerName parameter
-        - currently the function works fine while feeding multiple machines in from the pipeline, but the ability to use other methods to supply that input for multiple values does not work
-        - get the tool to work for something like
-            Get-RFH -ComputerName sl-computer-001,sl-computer-002 -Library D
-            Get-RFH -ComputerName (Get-Content C:\Test\Computers.txt) -Library D
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
         - param [switch]SendEmail
         - param [string]ToAddress
