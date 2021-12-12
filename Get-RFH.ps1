@@ -445,7 +445,7 @@
         # outputs the collection of results as specified, containing all computers and all users found on each computer
         If ($LogAll) {
             # writes all findings to csv
-            Write-Output $ResultCollection | Export-Csv -Path $LogAll -NoTypeInformation
+            Write-Output $ResultCollection | Select-Object $PropertyOutput | Export-Csv -Path $LogAll -NoTypeInformation
         }
         If ($LogError) {
             # writes only problems to csv
