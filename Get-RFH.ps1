@@ -18,10 +18,10 @@
 
         [mailaddress[]]$SendEmail,
         [mailaddress[]]$From,
-        [mailaddress[]]$CC,
-        [mailaddress[]]$BCC,
+        [mailaddress[]]$Cc,
+        [mailaddress[]]$Bcc,
         [string]$SmtpServer,
-        [int]$Port,
+        [int]$Port = "25",
         [switch]$UseSSL = $false
 
     )
@@ -479,10 +479,6 @@
                 }
             }
         }
-        If (!$LogAll -and !$LogError) {
-            # writes all findings and full object info to the pipeline
-            Write-Output $ResultCollection
-        }
 
         # obtaining info to report on elapsed time taken for the script to complete
         $DateEnd = Get-Date
@@ -490,6 +486,36 @@
         $Hour = $DateDiff.Hours
         $Minute = $DateDiff.Minutes
         $Second = $DateDiff.Seconds
+        
+        # handles actions taken to send an email report if specified
+        If ($SendEmail) {
+            If (!$Cc) {Remove-Variable Cc}
+            If (!$Bcc) {Remove-Variable Bcc}
+            If (!$UseSSL) {Remove-Variable UseSSL}
+
+            $From = "Redirected Folder Health <$From>"
+            $DomainName = (Get-ComputerInfo).CsDomain
+            $Subject = "Redirected Folder Health Report for $DomainName"
+            
+            If ($LogAll) {
+                $Body = "See the attachment for folder redirection details.
+                Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
+                Send-MailMessage -To $SendEmail -From $From -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogAll -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
+                Remove-Item -Path $LogAll -Force
+            }
+            If ($LogError) {
+                $Body = "See the attachment for folder redirection details.
+                The local paths shown need to be addressed so they are redirected and protected against data loss.
+                Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
+                Send-MailMessage -To $SendEmail -From $From -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogError -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
+                Remove-Item -Path $LogError -Force
+            }
+        }
+
+        # writes all findings and full object info to the pipeline if no logging options are specified
+        If (!$LogAll -and !$LogError) {
+            Write-Output $ResultCollection
+        }
 
         # writing completion to the application event log and out to host
         eventcreate /ID 13 /L APPLICATION /T INFORMATION /SO RedirectedFolderHealth /D "RFH script completed on $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection." > $null
@@ -510,6 +536,7 @@
         - param [string[]]BCC
         - param [switch]UseSSL
     - parameter set will need to be made so that the logging options are required if the email option is selected
+    - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
     - email options will use both the output from the LogAll and LogError parameters to send as attachments, based on which of those logging options are specified
     - after email is sent, the log files used will be removed
 #>
