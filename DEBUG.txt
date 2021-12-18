@@ -1,0 +1,10 @@
+=== BUG 01 ===
+
+PS C:\Windows\System32> Get-RFH -ComputerName 'sl-computer-001','sl-computer-002' -Library D,O,W,A,F -SendEmail robert@savantcts.com
+MetadataError: C:\Users\Administrator\Documents\GitRepo\Get-RFH.ps1:496
+Line |
+ 496 |              $From = "Redirected Folder Health <$From>"
+     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot convert value "Redirected Folder Health <>" to type "System.Net.Mail.MailAddress[]". Error: "Cannot convert value "Redirected Folder Health <>" to type "System.Net.Mail.MailAddress". Error: "An invalid character
+     | was found in the mail header: '<'.""
+
