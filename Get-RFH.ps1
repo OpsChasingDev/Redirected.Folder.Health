@@ -493,21 +493,21 @@
             If (!$Bcc) {Remove-Variable Bcc}
             If (!$UseSSL) {Remove-Variable UseSSL}
 
-            $From = "Redirected Folder Health <$From>"
+            $FromAddress = "Redirected Folder Health <$From>"
             $DomainName = (Get-ComputerInfo).CsDomain
             $Subject = "Redirected Folder Health Report for $DomainName"
             
             If ($LogAll) {
                 $Body = "See the attachment for folder redirection details.
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
-                Send-MailMessage -To $SendEmail -From $From -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogAll -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
+                Send-MailMessage -To $SendEmail -From $FromAddress -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogAll -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
                 Remove-Item -Path $LogAll -Force
             }
             If ($LogError) {
                 $Body = "See the attachment for folder redirection details.
                 The local paths shown need to be addressed so they are redirected and protected against data loss.
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
-                Send-MailMessage -To $SendEmail -From $From -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogError -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
+                Send-MailMessage -To $SendEmail -From $FromAddress -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogError -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
                 Remove-Item -Path $LogError -Force
             }
         }
