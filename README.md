@@ -35,5 +35,6 @@ Future goals for the project that make this different from the original (only or
 18) Remove in-line comments
 19) Look at replacing parameter data types like [string] into [System.IO.FileInfo] to further restrict user input options
 20) Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo; this only adds a few seconds, but cmon -_-
+21) Add a progress bar?
 
 ** Next big change will be another re-work to run the check on all provided machines IN PARALLEL **
