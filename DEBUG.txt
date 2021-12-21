@@ -13,6 +13,7 @@ Line |
 **********************
 === BUG 02 ===
 **********************
+splatting to fix: https://www.reddit.com/r/PowerShell/comments/aydhii/skip_parameter_if_null/
 
 PS C:\Windows\System32> Get-RFH -ComputerName 'sl-computer-001','sl-computer-002' -Library D,O,W,A,F -LogError C:\test\logerror.csv -SendEmail robert@savantcts.com -SmtpServer mail.savantcts.com
 Send-MailMessage: C:\Users\Administrator\Documents\GitRepo\Get-RFH.ps1:510
