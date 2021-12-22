@@ -23,7 +23,7 @@ Line |
      | A positional parameter cannot be found that accepts argument '$null'.
 
 **********************
-=== BUG 03 ===
+=== BUG 03 (FIXED) ===
 **********************
 
 PS C:\Windows\System32> Get-RFH -ComputerName 'sl-computer-001','sl-computer-002' -Library D,O,W,A,F -LogError C:\test\logerror.csv -SendEmail robert@savantcts.com -SmtpServer mail.savantcts.com -Port 25

@@ -509,6 +509,7 @@
                 $Body = "See the attachment for folder redirection details.
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
                 $EmailSplat += @{Body = $Body}
+                $EmailSplat += @{Attachments = $LogAll}
                 Send-MailMessage @EmailSplat
                 Remove-Item -Path $LogAll -Force
             }
@@ -519,6 +520,7 @@
                 The local paths shown need to be addressed so they are redirected and protected against data loss.
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
                 $EmailSplat += @{Body = $Body}
+                $EmailSplat += @{Attachments = $LogError}
                 Send-MailMessage @EmailSplat
                 Remove-Item -Path $LogError -Force
             }
@@ -540,16 +542,13 @@
 
 <#
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
-        - param [string[]]SendEmail - the value taken will be the 'to' address
-        - param [string]From
-        - param [string]SmtpServer
-        - param [int]Port
-        - param [string[]]CC
-        - param [string[]]BCC
-        - param [switch]UseSSL
-    - parameter set will need to be made so that the logging options are required if the email option is selected
-    - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
-    - email options will use both the output from the LogAll and LogError parameters to send as attachments, based on which of those logging options are specified
-    - after email is sent, the log files used will be removed
+    - suppress the warning sent to the host when Send-MailMessage is called
+    - modify the From value so it includes a displayname in front of the email address that reads "Redirected Folder Health"
+    - test the use of the optional parameters for the Send-Mailmessage components
+    - test the functionality of multiple values for fields intended to take it such as -To, -Cc, etc
+    - test using both log features with the mail message
+    - configure parameter set
+        - parameter set will need to be made so that the logging options are required if the email option is selected
+        - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
 #>
 
