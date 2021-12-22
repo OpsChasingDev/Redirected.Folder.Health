@@ -21,8 +21,8 @@
         [mailaddress[]]$Cc,
         [mailaddress[]]$Bcc,
         [string]$SmtpServer,
-        [int]$Port = "25",
-        [switch]$UseSSL = $false
+        [int]$Port,
+        [switch]$UseSSL
 
     )
     
@@ -489,25 +489,37 @@
         
         # handles actions taken to send an email report if specified
         If ($SendEmail) {
-            If (!$Cc) {Remove-Variable Cc}
-            If (!$Bcc) {Remove-Variable Bcc}
-            If (!$UseSSL) {Remove-Variable UseSSL}
-
-            $FromAddress = "Redirected Folder Health <$From>"
             $DomainName = (Get-ComputerInfo).CsDomain
-            $Subject = "Redirected Folder Health Report for $DomainName"
+            #$FromAddress = "Redirected Folder Health $From"
             
+            # splatting to construct parameters and values for Send-MailMessage
+            $EmailSplat = @{
+                To = $SendEmail
+                From = [string]$From #$FromAddress
+                Subject = "Redirected Folder Health Report for $DomainName"
+                SmtpServer = $SmtpServer
+                Port = $Port
+            }
+            If ($Cc) {$EmailSplat += @{Cc = $Cc}}
+            If ($Bcc) {$EmailSplat += @{Bcc = $Bcc}}
+            If ($UseSSL) {$EmailSplat += @{UseSSL = $true}}
+            
+            # add body and peform actions if -LogAll is specified
             If ($LogAll) {
                 $Body = "See the attachment for folder redirection details.
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
-                Send-MailMessage -To $SendEmail -From $FromAddress -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogAll -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
+                $EmailSplat += @{Body = $Body}
+                Send-MailMessage @EmailSplat
                 Remove-Item -Path $LogAll -Force
             }
+
+            # add body and perform actions if -LogError is specified
             If ($LogError) {
                 $Body = "See the attachment for folder redirection details.
                 The local paths shown need to be addressed so they are redirected and protected against data loss.
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
-                Send-MailMessage -To $SendEmail -From $FromAddress -Cc $Cc -Bcc $Bcc -Subject $Subject -Body $Body -Attachments $LogError -SmtpServer $SmtpServer -Port $Port -UseSsl $UseSSL
+                $EmailSplat += @{Body = $Body}
+                Send-MailMessage @EmailSplat
                 Remove-Item -Path $LogError -Force
             }
         }
