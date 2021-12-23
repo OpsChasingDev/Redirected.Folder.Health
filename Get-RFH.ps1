@@ -17,7 +17,7 @@
         [switch]$ShowHost = $false,
 
         [mailaddress[]]$SendEmail,
-        [mailaddress[]]$From,
+        [mailaddress]$From,
         [mailaddress[]]$Cc,
         [mailaddress[]]$Bcc,
         [string]$SmtpServer,
@@ -490,12 +490,14 @@
         # handles actions taken to send an email report if specified
         If ($SendEmail) {
             $DomainName = (Get-ComputerInfo).CsDomain
-            #$FromAddress = "Redirected Folder Health $From"
-            
+            $From = $From.ToString()
+            [string]$FromAddress = "Redirected Folder Health <$From>"
+
             # splatting to construct parameters and values for Send-MailMessage
             $EmailSplat = @{
                 To = $SendEmail
-                From = [string]$From #$FromAddress
+                # From = [string]$From #$FromAddress
+                From = $FromAddress
                 Subject = "Redirected Folder Health Report for $DomainName"
                 SmtpServer = $SmtpServer
                 Port = $Port
@@ -542,7 +544,6 @@
 
 <#
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
-    - modify the From value so it includes a displayname in front of the email address that reads "Redirected Folder Health"
     - test the use of the optional parameters for the Send-Mailmessage components
     - test the functionality of multiple values for fields intended to take it such as -To, -Cc, etc
     - test using both log features with the mail message

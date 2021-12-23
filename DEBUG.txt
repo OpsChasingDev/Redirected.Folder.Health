@@ -33,3 +33,22 @@ Line |
  522 |                  Send-MailMessage @EmailSplat
      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      | An invalid character was found in the mail header: '<'.
+
+**********************
+=== BUG 04 (FIXED) ===
+**********************
+
+PS C:\Windows\System32> Get-RFH -ComputerName 'sl-computer-001','sl-computer-002' -Library D,O,W,A,F -LogError C:\test\logerror.csv -SendEmail robert@savantcts.com -SmtpServer mail.savantcts.com -Port 25 -From no-reply@savantcts.com
+Send-MailMessage: C:\Users\Administrator\Documents\GitRepo\Get-RFH.ps1:525
+Line |
+ 525 |  …             Send-MailMessage @EmailSplat -WarningAction SilentlyConti …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | The specified string is not in the form required for an e-mail address.
+
+PS C:\Windows\System32> $e.CategoryInfo
+
+Category   : InvalidType
+Activity   : Send-MailMessage
+Reason     : FormatException
+TargetName : Redirected Folder Health <System.Net.Mail.MailAddress[]>
+TargetType : String
