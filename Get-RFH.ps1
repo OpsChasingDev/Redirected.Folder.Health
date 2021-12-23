@@ -543,10 +543,6 @@
 }
 
 <#
-    - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
-    - test the use of the optional parameters for the Send-Mailmessage components
-    - test the functionality of multiple values for fields intended to take it such as -To, -Cc, etc
-    - test using both log features with the mail message
     - configure parameter set
         - parameter set will need to be made so that the logging options are required if the email option is selected
         - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
