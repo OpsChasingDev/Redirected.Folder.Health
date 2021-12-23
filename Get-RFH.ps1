@@ -510,7 +510,7 @@
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
                 $EmailSplat += @{Body = $Body}
                 $EmailSplat += @{Attachments = $LogAll}
-                Send-MailMessage @EmailSplat
+                Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
                 Remove-Item -Path $LogAll -Force
             }
 
@@ -521,7 +521,7 @@
                 Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
                 $EmailSplat += @{Body = $Body}
                 $EmailSplat += @{Attachments = $LogError}
-                Send-MailMessage @EmailSplat
+                Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
                 Remove-Item -Path $LogError -Force
             }
         }
@@ -542,7 +542,6 @@
 
 <#
     - write in email sending functionality (change param names to reflect the name of the respective param in the Send-MailMessage cmdlet)
-    - suppress the warning sent to the host when Send-MailMessage is called
     - modify the From value so it includes a displayname in front of the email address that reads "Redirected Folder Health"
     - test the use of the optional parameters for the Send-Mailmessage components
     - test the functionality of multiple values for fields intended to take it such as -To, -Cc, etc
