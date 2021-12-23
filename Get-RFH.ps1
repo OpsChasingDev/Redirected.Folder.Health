@@ -489,6 +489,7 @@
         
         # handles actions taken to send an email report if specified
         If ($SendEmail) {
+                Write-Verbose "Preparing email..."
             $DomainName = (Get-ComputerInfo).CsDomain
             $From = $From.ToString()
             [string]$FromAddress = "Redirected Folder Health <$From>"
@@ -513,7 +514,9 @@
                 $EmailSplat += @{Body = $Body}
                 $EmailSplat += @{Attachments = $LogAll}
                 Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
+                    Write-Verbose "Email sent."
                 Remove-Item -Path $LogAll -Force
+                    Write-Verbose "Log file $LogAll removed."
             }
 
             # add body and perform actions if -LogError is specified
@@ -524,7 +527,9 @@
                 $EmailSplat += @{Body = $Body}
                 $EmailSplat += @{Attachments = $LogError}
                 Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
+                    Write-Verbose "Email sent."
                 Remove-Item -Path $LogError -Force
+                    Write-Verbose "Log file $LogError removed."
             }
         }
 
@@ -547,4 +552,3 @@
         - parameter set will need to be made so that the logging options are required if the email option is selected
         - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
 #>
-
