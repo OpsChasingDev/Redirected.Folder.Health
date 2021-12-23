@@ -5,7 +5,7 @@ Credit towards Dylan Brandes for planting the seed for this idea.  Thanks, bud!
 
 Prior to starting this project in GitHub, this tool was already in production at my place of work for several of our clients and has been able to report on an unexpectedly large number of broken folder redirections that we would've otherwise not been able to catch, helping to both maintain user functionality and act as a line of defense against data loss.
 
-My goal with this project is to refine the tool with a full re-work of the code and the breakdown of the components invovled so they will be more reusable, more easily readable, more easily debuggable, and ultimately be something that will not only be a full start-to-finish solution for goal but also be easy to give other members of the Team so they can reap the benefits of its power.
+My goal with this project is to refine the tool with a full re-work of the code and the breakdown of the components invovled so they will be more reusable, more easily readable, more easily debuggable, and ultimately be something that will not only be a full start-to-finish solution, but also be easy to give other members of the Team so they can reap the benefits of its power.
 
 Publicly storing my code is also something I have found is important to me so that I can be exposed to criticism and feedback.
 
@@ -35,5 +35,6 @@ Future goals for the project that make this different from the original (only or
 18) Remove in-line comments
 19) Look at replacing parameter data types like [string] into [System.IO.FileInfo] to further restrict user input options
 20) Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo; this only adds a few seconds, but cmon -_-
+21) Add a progress bar?
 
 ** Next big change will be another re-work to run the check on all provided machines IN PARALLEL **
