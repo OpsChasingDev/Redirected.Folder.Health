@@ -1,28 +1,154 @@
 ﻿Function Get-RFH {
-    [Cmdletbinding()]
+    [Cmdletbinding(DefaultParameterSetName = 'General')]
     Param (
+        
+        [Parameter(ParameterSetName = 'General',
+                    ValueFromPipeline = $true,
+                    Position = 0)]
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    ValueFromPipeline = $true,
+                    Position = 0)]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    ValueFromPipeline = $true,
+                    Position = 0)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $ComputerName,
 
-        [Parameter(ValueFromPipeline=$true)]
-        [string[]]$ComputerName,
-
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = 'General',
+                    Mandatory,
+                    Position = 1,
+                    HelpMessage = 'Enter the letter corresponding to the library you want checked:
+                    D = Desktop
+                    O = Documents
+                    W = Downloads
+                    M = Movies
+                    P = Pictures
+                    V = Videos
+                    F = Favorites
+                    A = AppData (roaming)
+                    S = Start Meu
+                    C = Contacts
+                    L = Links
+                    H = Searches
+                    G = Saved Games')]
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    Position = 1,
+                    HelpMessage = 'Enter the letter corresponding to the library you want checked:
+                    D = Desktop
+                    O = Documents
+                    W = Downloads
+                    M = Movies
+                    P = Pictures
+                    V = Videos
+                    F = Favorites
+                    A = AppData (roaming)
+                    S = Start Meu
+                    C = Contacts
+                    L = Links
+                    H = Searches
+                    G = Saved Games')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    Position = 1,
+                    HelpMessage = 'Enter the letter corresponding to the library you want checked:
+                    D = Desktop
+                    O = Documents
+                    W = Downloads
+                    M = Movies
+                    P = Pictures
+                    V = Videos
+                    F = Favorites
+                    A = AppData (roaming)
+                    S = Start Meu
+                    C = Contacts
+                    L = Links
+                    H = Searches
+                    G = Saved Games')]
         [ValidateSet("D","O","W","M","P","V","F","A","S","C","L","H","G")]
-        [string[]]$Library,
+        [string[]]
+        $Library,
 
-        [string[]]$ExcludeAccount,
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [string[]]
+        $ExcludeAccount,
 
-        [string]$LogAll,
-        [string]$LogError,
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
+                    This will be attached to the email report and include all results.')]
+        [string]
+        $LogAll,
 
-        [switch]$ShowHost = $false,
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
+                    This will be attached to the email report and include only findings where libraries are not redirected.')]
+        [string]
+        $LogError,
 
-        [mailaddress[]]$SendEmail,
-        [mailaddress]$From,
-        [mailaddress[]]$Cc,
-        [mailaddress[]]$Bcc,
-        [string]$SmtpServer,
-        [int]$Port,
-        [switch]$UseSSL
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [switch]
+        $ShowHost = $false,
+
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
+        [mailaddress[]]
+        $SendEmail,
+
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address you want the email report to come from.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address you want the email report to come from.')]
+        [mailaddress]
+        $From,
+
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [mailaddress[]]
+        $Cc,
+
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [mailaddress[]]
+        $Bcc,
+
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the SMTP server address by name.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the SMTP server address by name.')]
+        [string]
+        $SmtpServer,
+
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the port number for the receiving SMTP server.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the port number for the receiving SMTP server.')]
+        [int]
+        $Port,
+
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [switch]
+        $UseSSL
 
     )
     
@@ -548,7 +674,6 @@
 }
 
 <#
-    - configure parameter set
-        - parameter set will need to be made so that the logging options are required if the email option is selected
-        - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
+    - address the default value for ComputerName
+    - write comment based help for parameters
 #>
