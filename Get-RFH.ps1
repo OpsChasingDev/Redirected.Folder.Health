@@ -1,6 +1,22 @@
 ﻿Function Get-RFH {
+    <#
+    .SYNOPSIS
+        Short description
+    .DESCRIPTION
+        Long description
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .INPUTS
+        Inputs (if any)
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    #>
     [Cmdletbinding(DefaultParameterSetName = 'General')]
     Param (
+
         
         [Parameter(ParameterSetName = 'General',
                     ValueFromPipeline = $true,
@@ -13,9 +29,25 @@
                     Position = 0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
+        # Specifies the computer on which you want to run the folder redirection check.
         [string[]]
         $ComputerName = $env:COMPUTERNAME,
 
+        <# Indicates the user libraries you wish to have inspected, denoted by a single letter per library specified.
+        User libraries are represented by a letter specified in the legend below:
+        D = Desktop
+        O = Documents
+        W = Downloads
+        M = Movies
+        P = Pictures
+        V = Videos
+        F = Favorites
+        A = AppData (roaming)
+        S = Start Meu
+        C = Contacts
+        L = Links
+        H = Searches
+        G = Saved Games #>
         [Parameter(ParameterSetName = 'General',
                     Mandatory,
                     Position = 1,
