@@ -14,7 +14,7 @@
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string[]]
-        $ComputerName,
+        $ComputerName = $env:COMPUTERNAME,
 
         [Parameter(ParameterSetName = 'General',
                     Mandatory,
@@ -674,6 +674,5 @@
 }
 
 <#
-    - address the default value for ComputerName
     - write comment based help for parameters
 #>
