@@ -33,7 +33,7 @@ Future goals for the project that make this different from the original (only or
 	16) (DONE) Just set the data type of the email address parameters to [mailaddress]
 17) New function to estimate the total size broken down by library that a machine will take up on a server once redirection is enabled
 	18) (DONE (not doing this)) Remove in-line comments
-19) Look at replacing parameter data types like [string] into [System.IO.FileInfo] to further restrict user input options
+	19) (DONE) Look at replacing parameter data types like [string] into [System.IO.FileInfo] to further restrict user input options
 20) Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo; this only adds a few seconds, but cmon -_-
 21) Add a progress bar?
 
