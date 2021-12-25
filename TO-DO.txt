@@ -1,4 +1,4 @@
-- write full CBH in Get-RFH.ps1
+- write full CBH in Get-RFH.ps1 (finish examples with email/exports as well as notes)
 - Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo
 - Add alias 'Get-RedirectedFolderHealth' to the function
 - Find the redirection GPO by actual settings, not matching string values with wildcards

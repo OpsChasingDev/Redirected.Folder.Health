@@ -11,12 +11,159 @@
         
         Problem detection currently supports traditional folder redirections to a UNC path as well as OneDrive redirections.  Any local path for a specified user library will be identified as a problem.
 
+        The function writes entries to the Application log when an operation is started (Informational), an operation has completed (Informational), and a check mid-operation has detected a library not redirected (Warning).  Event ID: 13, Source: RedirectedFolderHealth
+
         Restrictions and Limitations:
         - The system running the function must have access to the ActiveDirectory module.
         - Requires PowerShell version 5.1 or greater.
         - PowerShell remoting must be enabled on target machines.
         - A user session must be logged in (either active or innactive) for data to be gathered on that user's library paths.
         - The function currently works in serial.
+    .EXAMPLE
+        PS C:\> Get-RFH -Library D
+
+        Output:
+ComputerName : SL-DC-01
+User         : Administrator
+Desktop      : C:\Users\Administrator\Desktop
+Documents    :
+Downloads    :
+Music        :
+Pictures     :
+Video        :
+Favorites    :
+AppData      :
+StartMenu    :
+Contacts     :
+Links        :
+Searches     :
+SavedGames   :
+
+        Returns the Desktop path for all users logged into the local machine.  The object returned includes libraries that were not checked and leaves them as null.
+    .EXAMPLE
+        PS C:\> Get-RFH -ComputerName 'SL-COMPUTER-001' -Library D,O,W | Select-Object ComputerName,User,Desktop,Documents,Downloads
+
+        Output:
+ComputerName : SL-COMPUTER-001
+User         : Administrator
+Desktop      : C:\Users\Administrator\Desktop
+Documents    : C:\Users\Administrator\Documents
+Downloads    : C:\Users\Administrator\Downloads
+
+ComputerName : SL-COMPUTER-001
+User         : user1
+Desktop      : \\SL-DC-01\RedirectedFolders\user1\Desktop
+Documents    : \\SL-DC-01\RedirectedFolders\user1\Documents
+Downloads    : \\SL-DC-01\RedirectedFolders\user1\Downloads
+
+        Returns the Desktop, Documents, and Downloads path for all users logged into the specified machine, SL-COMPUTER-001.  The function is piped to Select-Object so that only the desired object members are shown.
+    .EXAMPLE
+        PS C:\> Get-RFH -ComputerName (Get-Content C:\test\computers.txt) -Library D,O,P -ExcludeAccount Administrator | Select-Object ComputerName,User,Desktop,Documents,Pictures
+
+        Output:
+ComputerName : sl-computer-001
+User         : user1
+Desktop      : \\SL-DC-01\RedirectedFolders\user1\Desktop
+Documents    : \\SL-DC-01\RedirectedFolders\user1\Documents
+Pictures     : \\SL-DC-01\RedirectedFolders\user1\Pictures
+
+ComputerName : sl-computer-002
+User         : User-002
+Desktop      : C:\Users\user-002\Desktop
+Documents    : C:\Users\user-002\Documents
+Pictures     : C:\Users\user-002\Pictures
+
+        Gets the content of a text file for a list of computer names and runs the cmdlet against those machines.  The Administrator account is excluded from the gathered information by using the -ExcludeAccount parameter.
+    .EXAMPLE
+        PS C:\> (Get-ADComputer -Filter * -SearchBase 'OU=SL_Computers,OU=SavyLabs,DC=savylabs,DC=local').Name | Get-RFH -Library D,V,A -ExcludeAccount Administrator
+
+        Output:
+Warning: The computer SL-COMPUTER-003 could not be contacted!
+
+ComputerName : SL-COMPUTER-001
+User         : user1
+Desktop      : \\SL-DC-01\RedirectedFolders\user1\Desktop
+Documents    :
+Downloads    :
+Music        :
+Pictures     :
+Video        : \\SL-DC-01\RedirectedFolders\user1\Videos
+Favorites    :
+AppData      : C:\Users\user1\AppData\Roaming
+StartMenu    :
+Contacts     :
+Links        :
+Searches     :
+SavedGames   :
+
+ComputerName : SL-COMPUTER-002
+User         : User-002
+Desktop      : C:\Users\user-002\Desktop
+Documents    :
+Downloads    :
+Music        :
+Pictures     :
+Video        : C:\Users\user-002\Videos
+Favorites    :
+AppData      : C:\Users\user-002\AppData\Roaming
+StartMenu    :
+Contacts     :
+Links        :
+Searches     :
+SavedGames   :
+
+        Checks the Desktop, Video, and AppData libraries for all users on a list of computers obtained by piping Get-ADComputer to Get-RFH.  The Administrator account is excluded using the -ExcludeAccount parameter.  A warning message is presented for SL-COMPUTER-003 as it could not be contacted.
+    .EXAMPLE
+        PS C:\> Get-RFH -ComputerName 'SL-COMPUTER-001','SL-COMPUTER-002' -Library D,O -ShowHost | Select-Object ComputerName,User,Desktop,Documents
+
+        Output:
+RFH script started on 12/25/2021 10:52:46.
+ Library(ies) being checked:
+    Desktop
+    Documents
+Checking for redirections loaded on SL-COMPUTER-001...
+   Desktop path for user Administrator on machine SL-COMPUTER-001 is not redirected!
+   Documents path for user Administrator on machine SL-COMPUTER-001 is not redirected!
+   Desktop path for user user1 on machine SL-COMPUTER-001 is redirected.
+   Documents path for user user1 on machine SL-COMPUTER-001 is redirected.
+Checking for redirections loaded on SL-COMPUTER-002...
+   Desktop path for user Administrator on machine SL-COMPUTER-002 is not redirected!
+   Documents path for user Administrator on machine SL-COMPUTER-002 is not redirected!
+   Desktop path for user User-002 on machine SL-COMPUTER-002 is not redirected!
+   Documents path for user User-002 on machine SL-COMPUTER-002 is not redirected!
+
+RFH script completed on 12/25/2021 10:52:49 after 0 hour(s), 0 minute(s), and 2 second(s) for Library(ies) Desktop Documents
+ComputerName    User          Desktop                                    Documents
+------------    ----          -------                                    ---------
+SL-COMPUTER-001 Administrator C:\Users\Administrator\Desktop             C:\Users\Administrator\Documents
+SL-COMPUTER-001 user1         \\SL-DC-01\RedirectedFolders\user1\Desktop \\SL-DC-01\RedirectedFolders\user1\Documents
+SL-COMPUTER-002 Administrator C:\Users\Administrator\Desktop             C:\Users\Administrator\Documents
+SL-COMPUTER-002 User-002      C:\Users\user-002\Desktop                  C:\Users\user-002\Documents
+
+        Runs the check using the -ShowHost parameter.  Information about the script's operation and findings are displayed color-coded on the console, and the script returns the object containing its findings at the end.
+    .EXAMPLE
+        PS C:\> Get-RFH -ComputerName 'SL-COMPUTER-001','SL-COMPUTER-002' -Library D | Where-Object {$_.Desktop -match "SL-DC-01"} | Select-Object User,Desktop
+
+        Output:
+User  Desktop
+----  -------
+user1 \\SL-DC-01\RedirectedFolders\user1\Desktop
+
+        Checks specified computers to see if the Desktop path for the users logged into those machines is redirected to the server SL-DC-01.  The function first gathers the Desktop value for all user sessions found on the specified machines.  The returned information is piped to Where-Object which only passes the objects where the Desktop property matched "SL-DC-01".
+    .EXAMPLE
+        PS C:\> Get-RFH -ComputerName 'SL-COMPUTER-001','SL-COMPUTER-002' -Library D | Where-Object {$_.Desktop -notlike "*\\*"} | Select-Object User,Desktop
+
+        Output
+User          Desktop
+----          -------
+Administrator C:\Users\Administrator\Desktop
+Administrator C:\Users\Administrator\Desktop
+User-002      C:\Users\user-002\Desktop
+
+        Checks specified computers to see if any logged in users have their Desktop path pointed to a non-UNC location.
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
     .EXAMPLE
         PS C:\> <example usage>
         Explanation of what the example does
