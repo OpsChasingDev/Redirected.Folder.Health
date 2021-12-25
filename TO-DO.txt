@@ -1,4 +1,6 @@
 - write full CBH in Get-RFH.ps1
+- Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo
+- Add alias 'Get-RedirectedFolderHealth' to the function
 - Find the redirection GPO by actual settings, not matching string values with wildcards
 - Scheduled health checks using PowerShell Scheduled Jobs, not Scheduled Tasks
 - New function to check the configuration of the monitoring system
@@ -6,5 +8,4 @@
 - New function for actively changing redirection settings in the user's registry
 - Change function name of Schedule-RedirectedFolderHealth to Set-RFHSchedule
 - New function to estimate the total size broken down by library that a machine will take up on a server once redirection is enabled
-- Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo; this only adds a few seconds, but cmon -_-
 - Add a progress bar?

@@ -1,16 +1,59 @@
 ﻿Function Get-RFH {
     <#
     .SYNOPSIS
-        Short description
+        Runs against a computer to check the path of specified user libraries for any user logged into that machine.
     .DESCRIPTION
-        Long description
+        Runs against a computer to check the path of specified user libraries for any user logged into that machine.
+        
+        This function is written to fulfill multiple use cases.  As a tool, it can be used to remotely and quickly determine the path of a user library without the need for registry browsing or even knowing who is logged into the target system.
+        
+        As an automated solution, the cmdlet can be set up to regularly investigate systems and libraries to report on problems found where libraries that should be redirected are in fact not so remediation can take place, helping to avoid data loss and problems with data accessibility.
+        
+        Problem detection currently supports traditional folder redirections to a UNC path as well as OneDrive redirections.  Any local path for a specified user library will be identified as a problem.
+
+        Restrictions and Limitations:
+        - The system running the function must have access to the ActiveDirectory module.
+        - Requires PowerShell version 5.1 or greater.
+        - PowerShell remoting must be enabled on target machines.
+        - A user session must be logged in (either active or innactive) for data to be gathered on that user's library paths.
+        - The function currently works in serial.
     .EXAMPLE
         PS C:\> <example usage>
         Explanation of what the example does
     .INPUTS
-        Inputs (if any)
+        System.String[]
+        This cmdlet accepts computer names as strings in order to specify the systems it runs on.
     .OUTPUTS
-        Output (if any)
+        CSV
+        If using either the -LogAll or -LogError parameters, output will be stored in a CSV file.
+
+        Email
+        If using the -SendEmail parameter, output stored in a CSV file will be sent as an attachment on an email.
+
+        System.Management.Automation.PSCustomObject
+        By default, a PSCustomObject is returned by the cmdlet with the below members:
+
+Name         MemberType   Definition
+----         ----------   ----------
+Equals       Method       bool Equals(System.Object obj)
+GetHashCode  Method       int GetHashCode()
+GetType      Method       type GetType()
+ToString     Method       string ToString()
+AppData      NoteProperty System.String
+ComputerName NoteProperty System.String
+Contacts     NoteProperty System.String
+Desktop      NoteProperty System.String
+Documents    NoteProperty System.String
+Downloads    NoteProperty System.String
+Favorites    NoteProperty System.String
+Links        NoteProperty System.String
+Music        NoteProperty System.String
+Pictures     NoteProperty System.String
+SavedGames   NoteProperty System.String
+Searches     NoteProperty System.String
+StartMenu    NoteProperty System.String
+User         NoteProperty System.String
+Video        NoteProperty System.String
     .NOTES
         General notes
     #>
@@ -30,7 +73,7 @@
                     Position = 0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [string[]]
+        [String[]]
         $ComputerName = $env:COMPUTERNAME,
 
         <# Indicates the user libraries you wish to have inspected, denoted by a single letter per library specified.
@@ -100,7 +143,7 @@
                     H = Searches
                     G = Saved Games')]
         [ValidateSet("D","O","W","M","P","V","F","A","S","C","L","H","G")]
-        [string[]]
+        [String[]]
         $Library,
 
         <# Specifies an account to exclude, such as an administrative account that does not use folder redirections.
@@ -109,7 +152,7 @@
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
-        [string[]]
+        [String[]]
         $ExcludeAccount,
 
         <# Specifies the full path including the file name of a CSV file that results will be saved to; all results will be saved whether libraries are redirected or not.
@@ -121,7 +164,7 @@
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include all results.')]
         [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension.`n Example: C:\Users\Administrator\Desktop\LogAll.csv")]
-        [string]
+        [String]
         $LogAll,
 
         <# Specifies the full path including the file name of a CSV file that results will be saved to; only findings where libraries are not redirected will be reported.
@@ -133,14 +176,14 @@
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include only findings where libraries are not redirected.')]
         [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension. `n Example: C:\Users\Administrator\Desktop\LogError.csv")]
-        [string]
+        [String]
         $LogError,
 
         # Displays the progress and results of checks using Write-Host; this is disabled by default.  Use -Verbose for a more complete view of the operations at play.
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
-        [switch]
+        [Switch]
         $ShowHost = $false,
 
         <# Specifies the email address you want the report sent to.
@@ -152,7 +195,7 @@
         [Parameter(ParameterSetName = 'Email-LogError',
                     Mandatory,
                     HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
-        [mailaddress[]]
+        [MailAddress[]]
         $SendEmail,
 
         <# Specifies the email address you want the report to come from.  The email address specified will be appended to a display name and show like the below example:
@@ -164,19 +207,19 @@
         [Parameter(ParameterSetName = 'Email-LogError',
                     Mandatory,
                     HelpMessage = 'Enter the email address you want the email report to come from.')]
-        [mailaddress]
+        [MailAddress]
         $From,
 
         # Specifies the email addresses to which a carbon copy (CC) of the email report is sent.
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
-        [mailaddress[]]
+        [MailAddress[]]
         $Cc,
 
         # Specifies the email addresses that receive a copy of the report but are not listed as recipients of the email.
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
-        [mailaddress[]]
+        [MailAddress[]]
         $Bcc,
 
         # Specifies the name of the SMTP server that sends the email report.
@@ -186,7 +229,7 @@
         [Parameter(ParameterSetName = 'Email-LogError',
                     Mandatory,
                     HelpMessage = 'Enter the SMTP server address by name.')]
-        [string]
+        [String]
         $SmtpServer,
 
         # Specifies the port on the SMTP server.  No default value is set.
@@ -196,13 +239,13 @@
         [Parameter(ParameterSetName = 'Email-LogError',
                     Mandatory,
                     HelpMessage = 'Enter the port number for the receiving SMTP server.')]
-        [int]
+        [Int]
         $Port,
 
         # The Secure Sockets Layer (SSL) protocol is used to establish a secure connection to the remote computer to send mail. By default, SSL is not used.
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
-        [switch]
+        [Switch]
         $UseSSL
 
     )
@@ -727,7 +770,3 @@
         Write-Verbose "       Script Completed       "
     }
 }
-
-<#
-    - write full CBH
-#>
