@@ -120,8 +120,8 @@
                     Mandatory,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include all results.')]
-        [ValidatePattern(".\.csv",ErrorMessage = 'Specify the full path including the file name and the .csv extension.')]
-        [System.IO.FileInfo]
+        [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension.`n Example: C:\Users\Administrator\Desktop\LogAll.csv")]
+        [string]
         $LogAll,
 
         <# Specify the full path including the file name of a CSV file that results will be saved to; only findings where libraries are not redirected will be reported.
@@ -132,8 +132,8 @@
                     Mandatory,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include only findings where libraries are not redirected.')]
-        [ValidatePattern(".\.csv",ErrorMessage = 'Specify the full path including the file name and the .csv extension.')]
-        [System.IO.FileInfo]
+        [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension. `n Example: C:\Users\Administrator\Desktop\LogError.csv")]
+        [string]
         $LogError,
 
         [Parameter(ParameterSetName = 'General')]
@@ -718,5 +718,4 @@
 
 <#
     - write comment based help for parameters
-    - restrict input for parameters like LogAll and LogError to something more specific than a string (ideally a .csv file)
 #>
