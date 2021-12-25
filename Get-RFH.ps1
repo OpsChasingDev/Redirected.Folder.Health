@@ -1,28 +1,209 @@
 ﻿Function Get-RFH {
-    [Cmdletbinding()]
+    <#
+    .SYNOPSIS
+        Short description
+    .DESCRIPTION
+        Long description
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .INPUTS
+        Inputs (if any)
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    #>
+    [Cmdletbinding(DefaultParameterSetName = 'General')]
     Param (
 
-        [Parameter(ValueFromPipeline=$true)]
-        [string[]]$ComputerName,
+        <# Specifies the computer on which you want to run the folder redirection check.
+        If nothing is specified, the cmdlet runs against the localhost returned by $env:COMPUTERNAME #>
+        [Parameter(ParameterSetName = 'General',
+                    ValueFromPipeline = $true,
+                    Position = 0)]
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    ValueFromPipeline = $true,
+                    Position = 0)]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    ValueFromPipeline = $true,
+                    Position = 0)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $ComputerName = $env:COMPUTERNAME,
 
-        [Parameter(Mandatory)]
+        <# Indicates the user libraries you wish to have inspected, denoted by a single letter per library specified.
+        User libraries are represented by a letter specified in the legend below:
+        D = Desktop
+        O = Documents
+        W = Downloads
+        M = Movies
+        P = Pictures
+        V = Videos
+        F = Favorites
+        A = AppData (roaming)
+        S = Start Meu
+        C = Contacts
+        L = Links
+        H = Searches
+        G = Saved Games #>
+        [Parameter(ParameterSetName = 'General',
+                    Mandatory,
+                    Position = 1,
+                    HelpMessage = 'Enter the letter corresponding to the library you want checked:
+                    D = Desktop
+                    O = Documents
+                    W = Downloads
+                    M = Movies
+                    P = Pictures
+                    V = Videos
+                    F = Favorites
+                    A = AppData (roaming)
+                    S = Start Meu
+                    C = Contacts
+                    L = Links
+                    H = Searches
+                    G = Saved Games')]
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    Position = 1,
+                    HelpMessage = 'Enter the letter corresponding to the library you want checked:
+                    D = Desktop
+                    O = Documents
+                    W = Downloads
+                    M = Movies
+                    P = Pictures
+                    V = Videos
+                    F = Favorites
+                    A = AppData (roaming)
+                    S = Start Meu
+                    C = Contacts
+                    L = Links
+                    H = Searches
+                    G = Saved Games')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    Position = 1,
+                    HelpMessage = 'Enter the letter corresponding to the library you want checked:
+                    D = Desktop
+                    O = Documents
+                    W = Downloads
+                    M = Movies
+                    P = Pictures
+                    V = Videos
+                    F = Favorites
+                    A = AppData (roaming)
+                    S = Start Meu
+                    C = Contacts
+                    L = Links
+                    H = Searches
+                    G = Saved Games')]
         [ValidateSet("D","O","W","M","P","V","F","A","S","C","L","H","G")]
-        [string[]]$Library,
+        [string[]]
+        $Library,
 
-        [string[]]$ExcludeAccount,
+        <# Specifies an account to exclude, such as an administrative account that does not use folder redirections.
+        If the specified account has a logged in session on a machine being checked, this account's libraries will not be inspected, nor will they be included in any report.
+        Input an account in the form of a 'username' such as JDoe or John.Doe; do not include the domain in any format such as a UPN. This will be the equivalent of the SamAccountName property for an object returned by Get-ADUser. #>
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [string[]]
+        $ExcludeAccount,
 
-        [string]$LogAll,
-        [string]$LogError,
+        <# Specifies the full path including the file name of a CSV file that results will be saved to; all results will be saved whether libraries are redirected or not.
+        If used with the -SendEmail parameter, the file will be sent as an attachment and then deleted from its location on disk.
+        If using the -SendEmail parameter, you cannot use both this parameter and the -LogError parameter in the same syntax. #>
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
+                    This will be attached to the email report and include all results.')]
+        [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension.`n Example: C:\Users\Administrator\Desktop\LogAll.csv")]
+        [string]
+        $LogAll,
 
-        [switch]$ShowHost = $false,
+        <# Specifies the full path including the file name of a CSV file that results will be saved to; only findings where libraries are not redirected will be reported.
+        If used with the -SendEmail parameter, the file will be sent as an attachment and then deleted from its location on disk.
+        If using the -SendEmail parameter, you cannot use both this parameter and the -LogAll parameter in the same syntax. #>
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
+                    This will be attached to the email report and include only findings where libraries are not redirected.')]
+        [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension. `n Example: C:\Users\Administrator\Desktop\LogError.csv")]
+        [string]
+        $LogError,
 
-        [mailaddress[]]$SendEmail,
-        [mailaddress]$From,
-        [mailaddress[]]$Cc,
-        [mailaddress[]]$Bcc,
-        [string]$SmtpServer,
-        [int]$Port,
-        [switch]$UseSSL
+        # Displays the progress and results of checks using Write-Host; this is disabled by default.  Use -Verbose for a more complete view of the operations at play.
+        [Parameter(ParameterSetName = 'General')]
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [switch]
+        $ShowHost = $false,
+
+        <# Specifies the email address you want the report sent to.
+        This parameter must be used with either the -LogAll or -LogError parameter and will follow the syntax of the Email-LogAll or Email-LogError parameter set, respectively.
+        You cannot use -LogAll and -LogError in the same syntax together when using -SendEmail. #>
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
+        [mailaddress[]]
+        $SendEmail,
+
+        <# Specifies the email address you want the report to come from.  The email address specified will be appended to a display name and show like the below example:
+        -From no-reply@mycompany.com
+        "Redirected Folder Health <no-reply@mycompany.com>" #>
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address you want the email report to come from.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the email address you want the email report to come from.')]
+        [mailaddress]
+        $From,
+
+        # Specifies the email addresses to which a carbon copy (CC) of the email report is sent.
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [mailaddress[]]
+        $Cc,
+
+        # Specifies the email addresses that receive a copy of the report but are not listed as recipients of the email.
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [mailaddress[]]
+        $Bcc,
+
+        # Specifies the name of the SMTP server that sends the email report.
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the SMTP server address by name.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the SMTP server address by name.')]
+        [string]
+        $SmtpServer,
+
+        # Specifies the port on the SMTP server.  No default value is set.
+        [Parameter(ParameterSetName = 'Email-LogAll',
+                    Mandatory,
+                    HelpMessage = 'Enter the port number for the receiving SMTP server.')]
+        [Parameter(ParameterSetName = 'Email-LogError',
+                    Mandatory,
+                    HelpMessage = 'Enter the port number for the receiving SMTP server.')]
+        [int]
+        $Port,
+
+        # The Secure Sockets Layer (SSL) protocol is used to establish a secure connection to the remote computer to send mail. By default, SSL is not used.
+        [Parameter(ParameterSetName = 'Email-LogAll')]
+        [Parameter(ParameterSetName = 'Email-LogError')]
+        [switch]
+        $UseSSL
 
     )
     
@@ -548,7 +729,5 @@
 }
 
 <#
-    - configure parameter set
-        - parameter set will need to be made so that the logging options are required if the email option is selected
-        - parameter set will need to make sure that only one of the two logging options can be specified while using the email functionality
+    - write full CBH
 #>
