@@ -17,7 +17,8 @@
     [Cmdletbinding(DefaultParameterSetName = 'General')]
     Param (
 
-        
+        <# Specifies the computer on which you want to run the folder redirection check.
+        If nothing is specified, the cmdlet runs against the localhost returned by $env:COMPUTERNAME #>
         [Parameter(ParameterSetName = 'General',
                     ValueFromPipeline = $true,
                     Position = 0)]
@@ -29,7 +30,6 @@
                     Position = 0)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        # Specifies the computer on which you want to run the folder redirection check.
         [string[]]
         $ComputerName = $env:COMPUTERNAME,
 
@@ -103,7 +103,7 @@
         [string[]]
         $Library,
 
-        <# Specify an account to exclude, such as an administrative account that does not use folder redirections.
+        <# Specifies an account to exclude, such as an administrative account that does not use folder redirections.
         If the specified account has a logged in session on a machine being checked, this account's libraries will not be inspected, nor will they be included in any report.
         Input an account in the form of a 'username' such as JDoe or John.Doe; do not include the domain in any format such as a UPN. This will be the equivalent of the SamAccountName property for an object returned by Get-ADUser. #>
         [Parameter(ParameterSetName = 'General')]
@@ -112,9 +112,9 @@
         [string[]]
         $ExcludeAccount,
 
-        <# Specify the full path including the file name of a CSV file that results will be saved to; all results will be saved whether libraries are redirected or not.
+        <# Specifies the full path including the file name of a CSV file that results will be saved to; all results will be saved whether libraries are redirected or not.
         If used with the -SendEmail parameter, the file will be sent as an attachment and then deleted from its location on disk.
-        If using the -SendEmail parameter, you cannot use both this parameter and the -LogError parameter in the same syntax.#>
+        If using the -SendEmail parameter, you cannot use both this parameter and the -LogError parameter in the same syntax. #>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll',
                     Mandatory,
@@ -124,9 +124,9 @@
         [string]
         $LogAll,
 
-        <# Specify the full path including the file name of a CSV file that results will be saved to; only findings where libraries are not redirected will be reported.
+        <# Specifies the full path including the file name of a CSV file that results will be saved to; only findings where libraries are not redirected will be reported.
         If used with the -SendEmail parameter, the file will be sent as an attachment and then deleted from its location on disk.
-        If using the -SendEmail parameter, you cannot use both this parameter and the -LogAll parameter in the same syntax.#>
+        If using the -SendEmail parameter, you cannot use both this parameter and the -LogAll parameter in the same syntax. #>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogError',
                     Mandatory,
@@ -136,12 +136,16 @@
         [string]
         $LogError,
 
+        # Displays the progress and results of checks using Write-Host; this is disabled by default.  Use -Verbose for a more complete view of the operations at play.
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
         [switch]
         $ShowHost = $false,
 
+        <# Specifies the email address you want the report sent to.
+        This parameter must be used with either the -LogAll or -LogError parameter and will follow the syntax of the Email-LogAll or Email-LogError parameter set, respectively.
+        You cannot use -LogAll and -LogError in the same syntax together when using -SendEmail. #>
         [Parameter(ParameterSetName = 'Email-LogAll',
                     Mandatory,
                     HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
@@ -151,6 +155,9 @@
         [mailaddress[]]
         $SendEmail,
 
+        <# Specifies the email address you want the report to come from.  The email address specified will be appended to a display name and show like the below example:
+        -From no-reply@mycompany.com
+        "Redirected Folder Health <no-reply@mycompany.com>" #>
         [Parameter(ParameterSetName = 'Email-LogAll',
                     Mandatory,
                     HelpMessage = 'Enter the email address you want the email report to come from.')]
@@ -160,16 +167,19 @@
         [mailaddress]
         $From,
 
+        # Specifies the email addresses to which a carbon copy (CC) of the email report is sent.
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
         [mailaddress[]]
         $Cc,
 
+        # Specifies the email addresses that receive a copy of the report but are not listed as recipients of the email.
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
         [mailaddress[]]
         $Bcc,
 
+        # Specifies the name of the SMTP server that sends the email report.
         [Parameter(ParameterSetName = 'Email-LogAll',
                     Mandatory,
                     HelpMessage = 'Enter the SMTP server address by name.')]
@@ -179,6 +189,7 @@
         [string]
         $SmtpServer,
 
+        # Specifies the port on the SMTP server.  No default value is set.
         [Parameter(ParameterSetName = 'Email-LogAll',
                     Mandatory,
                     HelpMessage = 'Enter the port number for the receiving SMTP server.')]
@@ -188,6 +199,7 @@
         [int]
         $Port,
 
+        # The Secure Sockets Layer (SSL) protocol is used to establish a secure connection to the remote computer to send mail. By default, SSL is not used.
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
         [switch]
@@ -717,5 +729,5 @@
 }
 
 <#
-    - write comment based help for parameters
+    - write full CBH
 #>
