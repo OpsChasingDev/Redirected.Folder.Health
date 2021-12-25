@@ -103,26 +103,37 @@
         [string[]]
         $Library,
 
+        <# Specify an account to exclude, such as an administrative account that does not use folder redirections.
+        If the specified account has a logged in session on a machine being checked, this account's libraries will not be inspected, nor will they be included in any report.
+        Input an account in the form of a 'username' such as JDoe or John.Doe; do not include the domain in any format such as a UPN. This will be the equivalent of the SamAccountName property for an object returned by Get-ADUser. #>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll')]
         [Parameter(ParameterSetName = 'Email-LogError')]
         [string[]]
         $ExcludeAccount,
 
+        <# Specify the full path including the file name of a CSV file that results will be saved to; all results will be saved whether libraries are redirected or not.
+        If used with the -SendEmail parameter, the file will be sent as an attachment and then deleted from its location on disk.
+        If using the -SendEmail parameter, you cannot use both this parameter and the -LogError parameter in the same syntax.#>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll',
                     Mandatory,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include all results.')]
-        [string]
+        [ValidatePattern(".\.csv",ErrorMessage = 'Specify the full path including the file name and the .csv extension.')]
+        [System.IO.FileInfo]
         $LogAll,
 
+        <# Specify the full path including the file name of a CSV file that results will be saved to; only findings where libraries are not redirected will be reported.
+        If used with the -SendEmail parameter, the file will be sent as an attachment and then deleted from its location on disk.
+        If using the -SendEmail parameter, you cannot use both this parameter and the -LogAll parameter in the same syntax.#>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogError',
                     Mandatory,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include only findings where libraries are not redirected.')]
-        [string]
+        [ValidatePattern(".\.csv",ErrorMessage = 'Specify the full path including the file name and the .csv extension.')]
+        [System.IO.FileInfo]
         $LogError,
 
         [Parameter(ParameterSetName = 'General')]
@@ -707,4 +718,5 @@
 
 <#
     - write comment based help for parameters
+    - restrict input for parameters like LogAll and LogError to something more specific than a string (ideally a .csv file)
 #>
