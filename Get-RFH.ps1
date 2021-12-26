@@ -218,7 +218,11 @@ StartMenu    NoteProperty System.String
 User         NoteProperty System.String
 Video        NoteProperty System.String
     .NOTES
-        General notes
+        Author: Robert Stapleton
+        Version: 2.0.0-alpha
+        Date: 2021-12-26
+    .LINK
+        https://github.com/drummermanrob20/Redirected.Folder.Health
     #>
     [Cmdletbinding(DefaultParameterSetName = 'General')]
     Param (
