@@ -153,7 +153,7 @@ user1 \\SL-DC-01\RedirectedFolders\user1\Desktop
     .EXAMPLE
         PS C:\> Get-RFH -ComputerName 'SL-COMPUTER-001','SL-COMPUTER-002' -Library D | Where-Object {$_.Desktop -notlike "*\\*"} | Select-Object User,Desktop
 
-        Output
+        Output:
 User          Desktop
 ----          -------
 Administrator C:\Users\Administrator\Desktop
@@ -162,11 +162,27 @@ User-002      C:\Users\user-002\Desktop
 
         Checks specified computers to see if any logged in users have their Desktop path pointed to a non-UNC location.
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
+        PS C:\Windows\System32> (Get-ADComputer -Filter * -SearchBase 'OU=SL_Computers,OU=SavyLabs,DC=savylabs,DC=local').Name | Get-RFH -Library D,O,M,P,V -LogAll C:\test\logall.csv
+
+        Output: Writes all findings to the CSV file specified in -LogAll.  Any machines that could not be contacted for a check will be displayed on the console as a warning message.
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
+        PS C:\Windows\System32> (Get-ADComputer -Filter * -SearchBase 'OU=SL_Computers,OU=SavyLabs,DC=savylabs,DC=local').Name | Get-RFH -Library D,O,M,P,V -LogError C:\test\errors.csv
+
+        Output: Writes findings where paths were not redirected to the CSV file specified in -LogError.  Any machines that could not be contacted for a check will be displayed on the console as a warning message.
+    .EXAMPLE
+        Get-RFH -ComputerName (Get-Content C:\test\computers.txt) -Library D,O,M,P,V -LogError C:\test\errors.csv -LogAll \\SL-DC-01\TestShares\log.csv
+
+        The cmdlet checks the Desktop, Documents, Music, Pictures, and Video library paths for any user logged into the machines listed in the computers.txt file.  Only users who have one or more of those paths without redirection will be logged to the errors.csv file, whereas all findings regardles of path value will be stored in the log.csv file saved to a network share.
+    .EXAMPLE
+        PS C:\Windows\System32> (Get-ADComputer -Filter * -SearchBase 'OU=SL_Computers,OU=SavyLabs,DC=savylabs,DC=local').Name | Get-RFH -Library D,O,M,P,V -LogError C:\test\errors.csv -SendEmail user@mycompany.com -From no-reply@mycompany.com -SmtpServer mail.mycompany.com -Port 25
+        
+        The first part of the commnand gets the string formatted names of all computers located in a specific OU.  These names are sent down the pipeline where they are used as input for the -ComputerName parameter of Get-RFH.  Get-RFH checks each of those computers for the Desktop, Documents, Music, Pictures, and Video library paths of any logged in user and writes only results where a path is not redirected to a log file.  The log file is then sent as an attachment in an email report and then deleted from disk.
+    .EXAMPLE
+        PS C:\Windows\System32> (Get-ADComputer -Filter * -SearchBase 'OU=SL_Computers,OU=SavyLabs,DC=savylabs,DC=local').Name | Get-RFH -Library D,O,M,P,V -LogError C:\test\errors.csv -SendEmail user@mycompany.com -Bcc reportcollection@mycompany.com -From no-reply@mycompany.com -SmtpServer mail.mycompany.com -Port 2525 -UseSSL
+        Performs the same functionality as the previous example but also blind copies the report to another recipient, uses a custom SMTP server port, and elects to use SSL.
+    .EXAMPLE
+        Get-RFH -ComputerName SL-RDS-03 -Library D,O,M,P,V,A,W -LogError $env:TEMP\temp.csv -SendEmail boss@mycompany.com -Cc me@mycompany.com -From no-reply@mycompany.com -SmtpServer mail.mycompany.com -Port 25
+        Checks a number of libraries for users on an RDS server to look for redirection problems and send them to a supervisor for review.
     .INPUTS
         System.String[]
         This cmdlet accepts computer names as strings in order to specify the systems it runs on.
