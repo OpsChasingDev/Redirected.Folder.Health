@@ -225,6 +225,7 @@ Video        NoteProperty System.String
         https://github.com/drummermanrob20/Redirected.Folder.Health
     #>
     [Cmdletbinding(DefaultParameterSetName = 'General')]
+    [Alias('Get-RedirectedFolderHealth')]
     Param (
 
         <# Specifies the computer on which you want to run the folder redirection check.
