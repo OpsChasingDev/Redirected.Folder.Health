@@ -15,7 +15,6 @@
 
         Restrictions and Limitations:
         - The system running the function must have access to the ActiveDirectory module.
-        - Requires PowerShell version 5.1 or greater.
         - PowerShell remoting must be enabled on target machines.
         - A user session must be logged in (either active or innactive) for data to be gathered on that user's library paths.
         - The function currently works in serial.
@@ -882,7 +881,7 @@ Video        NoteProperty System.String
         # handles actions taken to send an email report if specified
         If ($SendEmail) {
                 Write-Verbose "Preparing email..."
-            $DomainName = (Get-ComputerInfo).CsDomain
+            $DomainName = (Get-ADDomain).DNSRoot
             $From = $From.ToString()
             [string]$FromAddress = "Redirected Folder Health <$From>"
 

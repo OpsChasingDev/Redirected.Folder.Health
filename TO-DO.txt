@@ -1,4 +1,3 @@
-- Find a more efficient way of getting the domain info for the email report to replace the use of Get-ComputerInfo
 - Find the redirection GPO by actual settings, not matching string values with wildcards
 - Scheduled health checks using PowerShell Scheduled Jobs, not Scheduled Tasks
 - New function to check the configuration of the monitoring system
