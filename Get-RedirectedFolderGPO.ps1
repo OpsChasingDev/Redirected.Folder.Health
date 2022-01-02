@@ -1,8 +1,6 @@
 break
-# objective here is to find which GPOs in the current domain have folder redirection settings
-    # get all GPOs in an XML report
-    # parse the XML for information only a GPO handling folder redirections would have
-    # once discovered GPOs match the findings, parse those XML reports further to get the setting details
+# find best method to parse XML reports of the returned findings for which libraries they deal with and what their paths are
+# the above parsed values need to be added as members to the object stored in $RedirectionGPO
 # output
     # psobject with the below properties
         # GPO GUID
@@ -34,6 +32,7 @@ $AllGuid = $AllGPO.Id.Guid
 ForEach ($Guid in $AllGuid) {
     [xml]$Report = Get-GPOReport -Guid $Guid -ReportType xml
     If ($Report.GPO.User.ExtensionData.Name -contains 'Folder Redirection'){
-        Get-GPO -Guid $Guid
+        $RedirectionGPO = Get-GPO -Guid $Guid
+        Write-Output $RedirectionGPO
     }
 }
