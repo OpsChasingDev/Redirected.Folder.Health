@@ -1,3 +1,4 @@
+break
 # objective here is to find which GPOs in the current domain have folder redirection settings
     # get all GPOs in an XML report
     # parse the XML for information only a GPO handling folder redirections would have
@@ -15,3 +16,24 @@
             # Name
             # Letter
             # Path
+
+(Get-GPOReport -All -ReportType xml).count
+
+[xml]$gpo = Get-GPO -Name 'RedirectedFolders_New01' | Get-GPOReport -ReportType xml
+
+# basic info
+$gpo.GPO
+# enabled and enforced (Enabled and NoOverride, respectively)
+$gpo.GPO.LinksTo
+# returns 'Folder Redirection' if handling folder redirection settings
+$gpo.GPO.User.ExtensionData.Name
+
+# grabs all GPOs, gets an XML report of their config, and returns GPOs that have folder redirection settings
+$AllGPO = Get-GPO -All
+$AllGuid = $AllGPO.Id.Guid
+ForEach ($Guid in $AllGuid) {
+    [xml]$Report = Get-GPOReport -Guid $Guid -ReportType xml
+    If ($Report.GPO.User.ExtensionData.Name -contains 'Folder Redirection'){
+        Write-Output $Report.GPO.User.ExtensionData.Name
+    }
+}
