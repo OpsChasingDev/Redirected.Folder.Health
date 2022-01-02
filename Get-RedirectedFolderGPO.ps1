@@ -34,6 +34,6 @@ $AllGuid = $AllGPO.Id.Guid
 ForEach ($Guid in $AllGuid) {
     [xml]$Report = Get-GPOReport -Guid $Guid -ReportType xml
     If ($Report.GPO.User.ExtensionData.Name -contains 'Folder Redirection'){
-        Write-Output $Report.GPO.User.ExtensionData.Name
+        Get-GPO -Guid $Guid
     }
 }
