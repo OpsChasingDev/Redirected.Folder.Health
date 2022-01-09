@@ -1,7 +1,12 @@
 Function Get-RedirectedFolderGPO {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param (
+
+        [Parameter(ParameterSetName = 'Name')]
         [string]$Name,
+
+        [Parameter(ParameterSetName = 'Id')]
+        [Alias('Guid')]
         [string]$Id
     )
     
