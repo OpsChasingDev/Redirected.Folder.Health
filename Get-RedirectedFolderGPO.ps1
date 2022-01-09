@@ -4,7 +4,7 @@ Function Get-RedirectedFolderGPO {
         Retrieves information about a GPO in the current domain that has Folder Redirection settings.
     .DESCRIPTION
         Retrieves information about a GPO in the current domain that has Folder Redirection settings.  By default, this cmdlet will look through all GPOs in the current domain and output information about all GPOs that have settings pertaining to Folder Redirections.
-The intended use case for this function is to easily get information on which policies control Folder Redirections.  The output of this cmdlet contains a property called "Library" which will hold a single letter abbreviation for each library the GPO is found to redirect.  This is meant to be used for constructing scripts where the letter abbreviations are stored in a variable and then passed to the Get-RFH function's -Library parameter to check the status of folder redirections on computers.
+The intended use case for this function is to easily get information on which policies control Folder Redirections.  For more robust functionality, the output of this cmdlet contains a property called "Library" which will hold a single letter abbreviation for each library the GPO is found to redirect.  This is meant to be used for constructing scripts where the letter abbreviations are stored in a variable and then passed to the Get-RFH function's -Library parameter to check the status of folder redirections on computers.
     .EXAMPLE
         PS C:\> Get-RedirectedFolderGPO
 
