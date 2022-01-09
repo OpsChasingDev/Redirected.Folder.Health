@@ -6,8 +6,124 @@ Function Get-RedirectedFolderGPO {
         Retrieves information about a GPO in the current domain that has Folder Redirection settings.  By default, this cmdlet will look through all GPOs in the current domain and output information about all GPOs that have settings pertaining to Folder Redirections.
 The intended use case for this function is to easily get information on which policies control Folder Redirections.  The output of this cmdlet contains a property called "Library" which will hold a single letter abbreviation for each library the GPO is found to redirect.  This is meant to be used for constructing scripts where the letter abbreviations are stored in a variable and then passed to the Get-RFH function's -Library parameter to check the status of folder redirections on computers.
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
+        PS C:\> Get-RedirectedFolderGPO
+
+        Output:
+DisplayName     : RedirectedFolders
+GUID            : 368bd0ae-e4ad-463a-b640-f4898f380cea
+Enabled         : {false, false}
+Enforced        : {false, false}
+Link            : {savylabs.local/SavyLabs/SL_Users, savylabs.local/SavyLabs/SL_Groups}
+RedirectionPath : {\\SL-DC-01\RedirectedFolders\%USERNAME%\Downloads, \\SL-DC-01\RedirectedFolders\%USERNAME%\Favorites, \\SL-DC-01\RedirectedFolders\%USERNAME%\Videos, \\SL-DC-01\RedirectedFolders\%USERNAME%\Music…}
+Downloads       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Downloads
+Favorites       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Favorites
+Videos          : \\SL-DC-01\RedirectedFolders\%USERNAME%\Videos
+Music           : \\SL-DC-01\RedirectedFolders\%USERNAME%\Music
+Pictures        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Pictures
+Documents       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Documents
+Start Menu      : \\SL-DC-01\RedirectedFolders\%USERNAME%\Start Menu
+Contacts        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Contacts
+Links           : \\SL-DC-01\RedirectedFolders\%USERNAME%\Links
+Searches        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Searches
+Saved Games     : \\SL-DC-01\RedirectedFolders\%USERNAME%\Saved Games
+Library         : {W, F, V, M…}
+
+DisplayName     : RedirectedFolders_New02
+GUID            : d8922189-cf31-4c47-bdbf-c70299a7aba4
+Enabled         : true
+Enforced        : true
+Link            : savylabs.local
+RedirectionPath : {\\SL-DC-01\RedirectedFolders\%USERNAME%\Pictures, \\SL-DC-01\RedirectedFolders\%USERNAME%\Music, \\SL-DC-01\RedirectedFolders\%USERNAME%\Videos, \\SL-DC-01\RedirectedFolders\%USERNAME%\Favorites…}
+Pictures        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Pictures
+Music           : \\SL-DC-01\RedirectedFolders\%USERNAME%\Music
+Videos          : \\SL-DC-01\RedirectedFolders\%USERNAME%\Videos
+Favorites       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Favorites
+Downloads       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Downloads
+Library         : {P, M, V, F…}
+
+DisplayName     : RedirectedFolders_New01
+GUID            : ea3025bc-034a-404a-b0ca-2f9cbf9d604c
+Enabled         : true
+Enforced        : true
+Link            : savylabs.local
+RedirectionPath : {\\SL-DC-01\RedirectedFolders\%USERNAME%\Desktop, \\SL-DC-01\RedirectedFolders\%USERNAME%\Documents}
+Desktop         : \\SL-DC-01\RedirectedFolders\%USERNAME%\Desktop
+Documents       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Documents
+Library         : {D, O}
+
+        Searches all GPOs in the current domain and returns information about those found that have settings pertaining to Folder Redirections.
+    .EXAMPLE
+        PS C:\> Get-RedirectedFolderGPO | Where-Object {$_.Enabled -eq $true} | Select-Object DisplayName,Link
+
+        Output:
+DisplayName             Link
+-----------             ----
+RedirectedFolders_New02 savylabs.local
+RedirectedFolders_New01 savylabs.local
+
+        Retrieves all GPOs with Folder Redirection settings, returns only those found where the link to an Active Directory container is enabled, and returns the DisplayName of the GPO as well as where the GPO is linked in Active Directory.
+    .EXAMPLE
+        PS C:\> $Library = (Get-RedirectedFolderGPO -Name 'RedirectedFolders_New01').Library
+        PS C:\> Get-RFH -ComputerName SL-COMPUTER-001 -Library $Library
+
+        Output:
+ComputerName : SL-COMPUTER-001
+User         : Administrator
+Desktop      : C:\Users\Administrator\Desktop
+Documents    : C:\Users\Administrator\Documents
+Downloads    :
+Music        :
+Pictures     :
+Video        :
+Favorites    :
+AppData      :
+StartMenu    :
+Contacts     :
+Links        :
+Searches     :
+SavedGames   :
+
+ComputerName : SL-COMPUTER-001
+User         : user1
+Desktop      : \\SL-DC-01\RedirectedFolders\user1\Desktop
+Documents    : \\SL-DC-01\RedirectedFolders\user1\Documents
+Downloads    :
+Music        :
+Pictures     :
+Video        :
+Favorites    :
+AppData      :
+StartMenu    :
+Contacts     :
+Links        :
+Searches     :
+SavedGames   :
+
+        Gets the letter abbreviations for the libraries redirected by the GPO called "RedirectedFolders_New01" and stores them in the variable called 'Library'.  The function Get-RFH is then called and uses $Library as the value for the -Library parameter to check those libraries for redirection on the computer called SL-COMPUTER-001.
+    .EXAMPLE
+        PS C:\> (Get-GPO -Name 'RedirectedFolders').Id.Guid | Get-RedirectedFolderGPO
+
+        Output:
+DisplayName     : RedirectedFolders
+GUID            : 368bd0ae-e4ad-463a-b640-f4898f380cea
+Enabled         : {false, false}
+Enforced        : {false, false}
+Link            : {savylabs.local/SavyLabs/SL_Users, savylabs.local/SavyLabs/SL_Groups}
+RedirectionPath : {\\SL-DC-01\RedirectedFolders\%USERNAME%\Downloads, \\SL-DC-01\RedirectedFolders\%USERNAME%\Favorites, \\SL-DC-01\RedirectedFolders\%USERNAME%\Videos, \\SL-DC-01\RedirectedFolders\%USERNAME%\Music…}
+Downloads       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Downloads
+Favorites       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Favorites
+Videos          : \\SL-DC-01\RedirectedFolders\%USERNAME%\Videos
+Music           : \\SL-DC-01\RedirectedFolders\%USERNAME%\Music
+Pictures        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Pictures
+Documents       : \\SL-DC-01\RedirectedFolders\%USERNAME%\Documents
+Start Menu      : \\SL-DC-01\RedirectedFolders\%USERNAME%\Start Menu
+Contacts        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Contacts
+Links           : \\SL-DC-01\RedirectedFolders\%USERNAME%\Links
+Searches        : \\SL-DC-01\RedirectedFolders\%USERNAME%\Searches
+Saved Games     : \\SL-DC-01\RedirectedFolders\%USERNAME%\Saved Games
+Library         : {W, F, V, M…}
+
+        Gets the GUID for the GPO called "RedirectedFolders" and passed it through the pipeline to Get-RedirectedFolderGPO to return information about the GPO's settings.
     .INPUTS
         Inputs (if any)
     .OUTPUTS
