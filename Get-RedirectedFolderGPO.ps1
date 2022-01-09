@@ -1,28 +1,3 @@
-# find best method to parse XML reports of the returned findings for which libraries they deal with and what their paths are
-# the above parsed values need to be added as members to the object stored in $RedirectionGPO
-# output
-    # psobject with the below properties
-        # GPO GUID
-        # GPO Friendly Name
-        # enabled or not
-        # enforced or not
-        # links to AD
-        # gpostatus
-        # description
-        # each library found (name of each property here will be the name of the library); this property will be an object with more properties to drill into:
-            # Name
-            # Letter
-            # Path
-<#
-[xml]$gpo = Get-GPO -Name 'RedirectedFolders_New01' | Get-GPOReport -ReportType xml
-# basic info
-$gpo.GPO
-# enabled and enforced (Enabled and NoOverride, respectively)
-$gpo.GPO.LinksTo
-# returns 'Folder Redirection' if handling folder redirection settings
-$gpo.GPO.User.ExtensionData.Name
-#>
-
 # grabs all GPOs, gets an XML report of their config, and returns GPOs that have folder redirection settings
 $AllGPO = Get-GPO -All
 $AllGuid = $AllGPO.Id.Guid
@@ -39,52 +14,72 @@ ForEach ($Guid in $AllGuid) {
         $obj | Add-Member -Name 'Enforced' -MemberType NoteProperty -Value $Report.GPO.LinksTo.NoOverride
         $obj | Add-Member -Name 'Link' -MemberType NoteProperty -Value $Report.GPO.LinksTo.SOMPath
 
+        # empty array that will hold the letters abbreviating all the libraries found
+        $AbbreviationCollection = @()
+
         # determine the libraries in the GPO
         $obj | Add-Member -Name 'Library' -MemberType NoteProperty -Value $Report.GPO.User.ExtensionData.Extension.Folder.Location.DestinationPath
 
-        # adds Desktop path if redirected
+        # adds each library to the object and the collection of library abbreviations if they are found
         ForEach ($l in $obj.Library) {
             If ($l -match 'Desktop') {
                 $obj | Add-Member -Name 'Desktop' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'D'
             }
             If ($l -match 'Documents') {
                 $obj | Add-Member -Name 'Documents' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'O'
             }
             If ($l -match 'Downloads') {
                 $obj | Add-Member -Name 'Downloads' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'W'
             }
             If ($l -match 'Music') {
                 $obj | Add-Member -Name 'Music' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'M'
             }
             If ($l -match 'Pictures') {
                 $obj | Add-Member -Name 'Pictures' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'P'
             }
             If ($l -match 'Videos') {
                 $obj | Add-Member -Name 'Videos' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'V'
             }
             If ($l -match 'Favorites') {
                 $obj | Add-Member -Name 'Favorites' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'F'
             }
             If ($l -match 'AppData') {
                 $obj | Add-Member -Name 'AppData' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'A'
             }
             If ($l -match 'Start Menu') {
                 $obj | Add-Member -Name 'Start Menu' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'S'
             }
             If ($l -match 'Contacts') {
                 $obj | Add-Member -Name 'Contacts' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'C'
             }
             If ($l -match 'Links') {
                 $obj | Add-Member -Name 'Links' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'L'
             }
             If ($l -match 'Searches') {
                 $obj | Add-Member -Name 'Searches' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'H'
             }
             If ($l -match 'Saved Games') {
                 $obj | Add-Member -Name 'Saved Games' -MemberType NoteProperty -Value $l
+                $AbbreviationCollection += 'G'
             }
         }
 
+        # creates object member containing all the library abbreviations as a string array
+        $obj | Add-Member -Name 'LibraryAbbreviation' -MemberType NoteProperty -Value $AbbreviationCollection
+
+        # outputs the object
         Write-Output $obj
     }
 }
