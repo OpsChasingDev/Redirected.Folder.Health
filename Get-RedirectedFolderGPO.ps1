@@ -1,5 +1,6 @@
 Function Get-RedirectedFolderGPO {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [Alias('Get-RFGPO')]
     Param (
 
         [Parameter(ParameterSetName = 'Name')]
