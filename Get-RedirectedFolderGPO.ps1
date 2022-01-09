@@ -18,10 +18,10 @@ ForEach ($Guid in $AllGuid) {
         $AbbreviationCollection = @()
 
         # determine the libraries in the GPO
-        $obj | Add-Member -Name 'Library' -MemberType NoteProperty -Value $Report.GPO.User.ExtensionData.Extension.Folder.Location.DestinationPath
+        $obj | Add-Member -Name 'RedirectionPath' -MemberType NoteProperty -Value $Report.GPO.User.ExtensionData.Extension.Folder.Location.DestinationPath
 
         # adds each library to the object and the collection of library abbreviations if they are found
-        ForEach ($l in $obj.Library) {
+        ForEach ($l in $obj.RedirectionPath) {
             If ($l -match 'Desktop') {
                 $obj | Add-Member -Name 'Desktop' -MemberType NoteProperty -Value $l
                 $AbbreviationCollection += 'D'
@@ -77,7 +77,7 @@ ForEach ($Guid in $AllGuid) {
         }
 
         # creates object member containing all the library abbreviations as a string array
-        $obj | Add-Member -Name 'LibraryAbbreviation' -MemberType NoteProperty -Value $AbbreviationCollection
+        $obj | Add-Member -Name 'Library' -MemberType NoteProperty -Value $AbbreviationCollection
 
         # outputs the object
         Write-Output $obj
