@@ -22,7 +22,8 @@ The intended use case for this function is to easily get information on which po
         [Parameter(ParameterSetName = 'Name')]
         [string]$Name,
 
-        [Parameter(ParameterSetName = 'Id')]
+        [Parameter(ParameterSetName = 'Id',
+                    ValueFromPipeline)]
         [Alias('Guid')]
         [string]$Id
 
