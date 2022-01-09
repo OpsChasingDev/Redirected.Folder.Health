@@ -129,7 +129,11 @@ Library         : {W, F, V, M…}
     .OUTPUTS
         Output (if any)
     .NOTES
-        General notes
+        Author: Robert Stapleton
+        Version: 1.0.0-alpha
+        Date: 2022-01-09
+    .LINK
+        https://github.com/drummermanrob20/Redirected.Folder.Health
     #>
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [Alias('Get-RFGPO')]
