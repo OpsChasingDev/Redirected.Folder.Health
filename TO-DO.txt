@@ -1,4 +1,3 @@
-- Find the redirection GPO by actual settings, not matching string values with wildcards
 - Scheduled health checks using PowerShell Scheduled Jobs, not Scheduled Tasks
 - New function to check the configuration of the monitoring system
 - Cleaned up version of Move-Module that has options to move the module file to any user-chosen PSModule path
