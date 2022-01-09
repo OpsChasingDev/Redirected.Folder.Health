@@ -125,9 +125,36 @@ Library         : {W, F, V, M…}
 
         Gets the GUID for the GPO called "RedirectedFolders" and passed it through the pipeline to Get-RedirectedFolderGPO to return information about the GPO's settings.
     .INPUTS
-        Inputs (if any)
+        System.String[]
+        This cmdlet accepts a GUID as a string in order to specify which GPO needs to be targeted for getting Folder Redirection settings.
     .OUTPUTS
-        Output (if any)
+        System.Management.Automation.PSCustomObject
+        By default, a PSCustomObject is returned by the cmdlet with the below members:
+
+Name            MemberType   Definition
+----            ----------   ----------
+Equals          Method       bool Equals(System.Object obj)
+GetHashCode     Method       int GetHashCode()
+GetType         Method       type GetType()
+ToString        Method       string ToString()
+Contacts        NoteProperty System.String
+DisplayName     NoteProperty System.String
+Documents       NoteProperty System.String
+Downloads       NoteProperty System.String
+Enabled         NoteProperty System.Object[]
+Enforced        NoteProperty System.Object[]
+Favorites       NoteProperty System.String
+GUID            NoteProperty System.Object[]
+Library         NoteProperty System.Object[]
+Link            NoteProperty System.Object[]
+Links           NoteProperty System.String
+Music           NoteProperty System.String
+Pictures        NoteProperty System.String
+RedirectionPath NoteProperty System.Object[]
+Saved Games     NoteProperty System.String
+Searches        NoteProperty System.String
+Start Menu      NoteProperty System.String
+Videos          NoteProperty System.String
     .NOTES
         Author: Robert Stapleton
         Version: 1.0.0-alpha
