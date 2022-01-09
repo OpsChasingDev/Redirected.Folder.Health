@@ -35,11 +35,55 @@ ForEach ($Guid in $AllGuid) {
         $obj = New-Object -TypeName psobject
         $obj | Add-Member -Name 'DisplayName' -MemberType NoteProperty -Value $RedirectionGPO.DisplayName
         $obj | Add-Member -Name 'GUID' -MemberType NoteProperty -Value $RedirectionGPO.Id
-
-        # determine the libraries in the GPO
         $obj | Add-Member -Name 'Enabled' -MemberType NoteProperty -Value $Report.GPO.LinksTo.Enabled
         $obj | Add-Member -Name 'Enforced' -MemberType NoteProperty -Value $Report.GPO.LinksTo.NoOverride
-        $obj | Add-Member -Name 'Desktop' -MemberType NoteProperty -Value $Report.GPO.User.ExtensionData.Extension.Folder.Location.DestinationPath
+        $obj | Add-Member -Name 'Link' -MemberType NoteProperty -Value $Report.GPO.LinksTo.SOMPath
+
+        # determine the libraries in the GPO
+        $obj | Add-Member -Name 'Library' -MemberType NoteProperty -Value $Report.GPO.User.ExtensionData.Extension.Folder.Location.DestinationPath
+
+        # adds Desktop path if redirected
+        ForEach ($l in $obj.Library) {
+            If ($l -match 'Desktop') {
+                $obj | Add-Member -Name 'Desktop' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Documents') {
+                $obj | Add-Member -Name 'Documents' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Downloads') {
+                $obj | Add-Member -Name 'Downloads' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Music') {
+                $obj | Add-Member -Name 'Music' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Pictures') {
+                $obj | Add-Member -Name 'Pictures' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Videos') {
+                $obj | Add-Member -Name 'Videos' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Favorites') {
+                $obj | Add-Member -Name 'Favorites' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'AppData') {
+                $obj | Add-Member -Name 'AppData' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Start Menu') {
+                $obj | Add-Member -Name 'Start Menu' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Contacts') {
+                $obj | Add-Member -Name 'Contacts' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Links') {
+                $obj | Add-Member -Name 'Links' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Searches') {
+                $obj | Add-Member -Name 'Searches' -MemberType NoteProperty -Value $l
+            }
+            If ($l -match 'Saved Games') {
+                $obj | Add-Member -Name 'Saved Games' -MemberType NoteProperty -Value $l
+            }
+        }
 
         Write-Output $obj
     }
