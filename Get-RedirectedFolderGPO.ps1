@@ -1,7 +1,22 @@
 Function Get-RedirectedFolderGPO {
+    [CmdletBinding()]
+    Param (
+        [string]$Name,
+        [string]$Id
+    )
+    
+    # determines which GPOs will be used in the function based on parameter input
+    If (!$Name -and !$Id) {
+        $AllGPO = Get-GPO -All
+    }
+    ElseIf ($Name -and !$Id) {
+        $AllGPO = Get-GPO -Name $Name
+    }
+    ElseIf (!$Name -and $Id) {
+        $AllGPO = Get-GPO -Guid $Id
+    }
 
-    # grabs all GPOs, gets an XML report of their config, and returns GPOs that have folder redirection settings
-    $AllGPO = Get-GPO -All
+    # gets XML report of specified GPO(s) (does this for all GPOs by default), and returns GPOs that have folder redirection settings
     $AllGuid = $AllGPO.Id.Guid
     ForEach ($Guid in $AllGuid) {
         [xml]$Report = Get-GPOReport -Guid $Guid -ReportType xml
