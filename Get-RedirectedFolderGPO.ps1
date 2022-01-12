@@ -157,8 +157,8 @@ Start Menu      NoteProperty System.String
 Videos          NoteProperty System.String
     .NOTES
         Author: Robert Stapleton
-        Version: 1.0.0-alpha
-        Date: 2022-01-09
+        Version: 2.0.0
+        Date: 2022-01-11
         Tested with PowerShell versions 3, 4, 5, and 7
     .LINK
         https://github.com/drummermanrob20/Redirected.Folder.Health

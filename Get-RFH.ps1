@@ -218,8 +218,8 @@ User         NoteProperty System.String
 Video        NoteProperty System.String
     .NOTES
         Author: Robert Stapleton
-        Version: 2.0.0-alpha
-        Date: 2021-12-26
+        Version: 2.0.0
+        Date: 2022-01-11
     .LINK
         https://github.com/drummermanrob20/Redirected.Folder.Health
     #>
