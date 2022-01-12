@@ -52,3 +52,11 @@ Activity   : Send-MailMessage
 Reason     : FormatException
 TargetName : Redirected Folder Health <System.Net.Mail.MailAddress[]>
 TargetType : String
+
+**********************
+=== BUG 05 (FIXED) ===
+**********************
+
+Compatibility issue with PowerShell 5.1 and below.
+ErrorMessage property of ValidatePattern param validation was added with PowerShell version 7.
+Removed this portion of the property validation settings for LogError and LogAll parameters.

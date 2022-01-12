@@ -330,7 +330,7 @@ Video        NoteProperty System.String
                     Mandatory,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include all results.')]
-        [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension.`n Example: C:\Users\Administrator\Desktop\LogAll.csv")]
+        [ValidatePattern('.\.csv$')]
         [String]
         $LogAll,
 
@@ -342,7 +342,7 @@ Video        NoteProperty System.String
                     Mandatory,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include only findings where libraries are not redirected.')]
-        [ValidatePattern('.\.csv$',ErrorMessage = "Specify the full path including the file name and the .csv extension. `n Example: C:\Users\Administrator\Desktop\LogError.csv")]
+        [ValidatePattern('.\.csv$')]
         [String]
         $LogError,
 
