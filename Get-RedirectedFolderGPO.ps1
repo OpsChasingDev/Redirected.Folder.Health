@@ -159,6 +159,7 @@ Videos          NoteProperty System.String
         Author: Robert Stapleton
         Version: 1.0.0-alpha
         Date: 2022-01-09
+        Tested with PowerShell versions 3, 4, 5, and 7
     .LINK
         https://github.com/drummermanrob20/Redirected.Folder.Health
     #>
