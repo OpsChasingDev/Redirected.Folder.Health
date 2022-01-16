@@ -5,4 +5,3 @@
 - Change function name of Schedule-RedirectedFolderHealth to Set-RFHSchedule
 - New function to estimate the total size broken down by library that a machine will take up on a server once redirection is enabled
 - Add a progress bar?
-test
