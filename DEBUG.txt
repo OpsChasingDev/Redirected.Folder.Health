@@ -60,3 +60,25 @@ TargetType : String
 Compatibility issue with PowerShell 5.1 and below.
 ErrorMessage property of ValidatePattern param validation was added with PowerShell version 7.
 Removed this portion of the property validation settings for LogError and LogAll parameters.
+
+**********************
+=== BUG 06 ===
+**********************
+
+The below errors occur if Get-RFH is configured by the user with -LogError and -SendEmail parameters.
+If no redirection errors are found during the script's operation, no file is generated and thusly does not exist for these cmdlets to operate with.
+The same operation works normally if the -LogAll parameter is used instead of the -LogError, because the -LogError CSV file is only created if problems are found.
+
+Send-MailMessage : Could not find file 'C:\windows\temp\RFHerror.csv'.
+At C:\scripts\Get-RFH.ps1:920 char:17
++                 Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Send-MailMessage], FileNotFoundException
+    + FullyQualifiedErrorId : System.IO.FileNotFoundException,Microsoft.PowerShell.Commands.SendMailMessage
+ 
+Remove-Item : Cannot find path 'C:\windows\temp\RFHerror.csv' because it does not exist.
+At C:\scripts\Get-RFH.ps1:922 char:17
++                 Remove-Item -Path $LogError -Force
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\windows\temp\RFHerror.csv:String) [Remove-Item], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.RemoveItemCommand
