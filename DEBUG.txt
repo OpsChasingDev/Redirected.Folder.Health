@@ -62,7 +62,7 @@ ErrorMessage property of ValidatePattern param validation was added with PowerSh
 Removed this portion of the property validation settings for LogError and LogAll parameters.
 
 **********************
-=== BUG 06 ===
+=== BUG 06 (FIXED) ===
 **********************
 
 The below errors occur if Get-RFH is configured by the user with -LogError and -SendEmail parameters.
