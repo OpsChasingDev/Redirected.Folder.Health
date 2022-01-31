@@ -888,7 +888,6 @@ Video        NoteProperty System.String
             # splatting to construct parameters and values for Send-MailMessage
             $EmailSplat = @{
                 To = $SendEmail
-                # From = [string]$From #$FromAddress
                 From = $FromAddress
                 Subject = "Redirected Folder Health Report for $DomainName"
                 SmtpServer = $SmtpServer
@@ -912,15 +911,22 @@ Video        NoteProperty System.String
 
             # add body and perform actions if -LogError is specified
             If ($LogError) {
-                $Body = "See the attachment for folder redirection details.
-                The local paths shown need to be addressed so they are redirected and protected against data loss.
-                Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
-                $EmailSplat += @{Body = $Body}
-                $EmailSplat += @{Attachments = $LogError}
-                Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
-                    Write-Verbose "Email sent."
-                Remove-Item -Path $LogError -Force
-                    Write-Verbose "Log file $LogError removed."
+                $VerifyLog = Get-Item $LogError -ErrorAction SilentlyContinue
+                If ($VerifyLog) {
+                    $Body = "See the attachment for folder redirection details.
+                    The local paths shown need to be addressed so they are redirected and protected against data loss.
+                    Script completed on $env:COMPUTERNAME at $DateEnd after $Hour hour(s), $Minute minute(s), and $Second second(s) for Library(ies) $LFullCollection."
+                    $EmailSplat += @{Body = $Body}
+                    $EmailSplat += @{Attachments = $LogError}
+                    Send-MailMessage @EmailSplat -WarningAction SilentlyContinue
+                        Write-Verbose "Email sent."
+                    Remove-Item -Path $LogError -Force
+                        Write-Verbose "Log file $LogError removed."    
+                }
+                Else {
+                    Write-Verbose "No error log file was written because no problems with redirections were found.  As a result, no email has been sent."
+                }
+                
             }
         }
 
