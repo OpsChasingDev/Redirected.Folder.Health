@@ -888,7 +888,6 @@ Video        NoteProperty System.String
             # splatting to construct parameters and values for Send-MailMessage
             $EmailSplat = @{
                 To = $SendEmail
-                # From = [string]$From #$FromAddress
                 From = $FromAddress
                 Subject = "Redirected Folder Health Report for $DomainName"
                 SmtpServer = $SmtpServer
