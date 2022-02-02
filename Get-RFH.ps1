@@ -259,7 +259,7 @@ Video        NoteProperty System.String
         H = Searches
         G = Saved Games #>
         [Parameter(ParameterSetName = 'General',
-                    Mandatory,
+                    Mandatory = $true,
                     Position = 1,
                     HelpMessage = 'Enter the letter corresponding to the library you want checked:
                     D = Desktop
@@ -276,7 +276,7 @@ Video        NoteProperty System.String
                     H = Searches
                     G = Saved Games')]
         [Parameter(ParameterSetName = 'Email-LogAll',
-                    Mandatory,
+                    Mandatory = $true,
                     Position = 1,
                     HelpMessage = 'Enter the letter corresponding to the library you want checked:
                     D = Desktop
@@ -293,7 +293,7 @@ Video        NoteProperty System.String
                     H = Searches
                     G = Saved Games')]
         [Parameter(ParameterSetName = 'Email-LogError',
-                    Mandatory,
+                    Mandatory = $true,
                     Position = 1,
                     HelpMessage = 'Enter the letter corresponding to the library you want checked:
                     D = Desktop
@@ -327,7 +327,7 @@ Video        NoteProperty System.String
         If using the -SendEmail parameter, you cannot use both this parameter and the -LogError parameter in the same syntax. #>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogAll',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include all results.')]
         [ValidatePattern('.\.csv$')]
@@ -339,7 +339,7 @@ Video        NoteProperty System.String
         If using the -SendEmail parameter, you cannot use both this parameter and the -LogAll parameter in the same syntax. #>
         [Parameter(ParameterSetName = 'General')]
         [Parameter(ParameterSetName = 'Email-LogError',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the full path including the file name of the CSV file you want generated.
                     This will be attached to the email report and include only findings where libraries are not redirected.')]
         [ValidatePattern('.\.csv$')]
@@ -357,10 +357,10 @@ Video        NoteProperty System.String
         This parameter must be used with either the -LogAll or -LogError parameter and will follow the syntax of the Email-LogAll or Email-LogError parameter set, respectively.
         You cannot use -LogAll and -LogError in the same syntax together when using -SendEmail. #>
         [Parameter(ParameterSetName = 'Email-LogAll',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
         [Parameter(ParameterSetName = 'Email-LogError',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the email address(es) you want receiving the email report.')]
         [MailAddress[]]
         $SendEmail,
@@ -369,10 +369,10 @@ Video        NoteProperty System.String
         -From no-reply@mycompany.com
         "Redirected Folder Health <no-reply@mycompany.com>" #>
         [Parameter(ParameterSetName = 'Email-LogAll',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the email address you want the email report to come from.')]
         [Parameter(ParameterSetName = 'Email-LogError',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the email address you want the email report to come from.')]
         [MailAddress]
         $From,
@@ -391,20 +391,20 @@ Video        NoteProperty System.String
 
         # Specifies the name of the SMTP server that sends the email report.
         [Parameter(ParameterSetName = 'Email-LogAll',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the SMTP server address by name.')]
         [Parameter(ParameterSetName = 'Email-LogError',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the SMTP server address by name.')]
         [String]
         $SmtpServer,
 
         # Specifies the port on the SMTP server.  No default value is set.
         [Parameter(ParameterSetName = 'Email-LogAll',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the port number for the receiving SMTP server.')]
         [Parameter(ParameterSetName = 'Email-LogError',
-                    Mandatory,
+                    Mandatory = $true,
                     HelpMessage = 'Enter the port number for the receiving SMTP server.')]
         [Int]
         $Port,
