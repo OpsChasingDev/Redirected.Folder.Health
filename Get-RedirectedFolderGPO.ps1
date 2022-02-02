@@ -171,7 +171,7 @@ Videos          NoteProperty System.String
         [string]$Name,
 
         [Parameter(ParameterSetName = 'Id',
-                    ValueFromPipeline)]
+                    ValueFromPipeline = $true)]
         [Alias('Guid')]
         [string]$Id
 
