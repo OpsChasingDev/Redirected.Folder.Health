@@ -14,7 +14,7 @@ As good as folder redirections are, this Group Policy based solution comes with 
 ![PowerShell Icon](https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/PowerShell_Core_6.0_icon.png)
 The initial design of the solution was specific to our work case at the time, but I have since published this code base as a means of controlling a far more re-useable version.  The Get-RFH.ps1 script can be used in a standalone method for quick, one-off checks for individual or bulk machines, or it can be called on in constructors for more versatility such as automating a regular event where Get-RedirectedFolderGPO updates which libraries are configured to be redirected and passes that information to the Get-RFH script where the results are emailed to a ticketing solution for an engineer to investigate further.
 
-## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> Some Usage Examples
+## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> Get-RFH.ps1 Examples
 Taken directly from the comment-based help:
 
 - Returns the Desktop, Documents, and Downloads path for all users logged into the specified machine, SL-COMPUTER-001.  The function is piped to Select-Object so that only the desired object members are shown.
@@ -115,3 +115,8 @@ Get-RFH -ComputerName SL-RDS-03 -Library D,O,M,P,V,A,W -LogError $env:TEMP\temp.
 
 ## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> Future Goals
 As a means of self-criticism, the biggest thing that bothers me about the way my tool works is that it operates in serial.  If you need to check a few hundred machines, you're going to be waiting for each of them to be checked one at a time.  While this methodology may save on bandwidth and not matter for use in an automated check, the solution currently fails to utilize one of the best aspects about PowerShell and therefore creates limitations when scaling.  Leveraging more resouces on the client end and getting the script to work in parallel is ultimately what needs to be done next.
+
+> **Other future goals for the project included below:**
+- Add a progress bar (though moot if the operation can run in parallel)
+- New function for estimating the total size redirections will consume on a server once implemented
+- New function for actively changing broken redirections when found

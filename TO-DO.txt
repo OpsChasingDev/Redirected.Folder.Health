@@ -1,7 +1,3 @@
-- Scheduled health checks using PowerShell Scheduled Jobs, not Scheduled Tasks
-- New function to check the configuration of the monitoring system
-- Cleaned up version of Move-Module that has options to move the module file to any user-chosen PSModule path
-- New function for actively changing redirection settings in the user's registry
-- Change function name of Schedule-RedirectedFolderHealth to Set-RFHSchedule
+- Add a progress bar
 - New function to estimate the total size broken down by library that a machine will take up on a server once redirection is enabled
-- Add a progress bar?
+- New function for actively changing redirection settings in the user's registry
