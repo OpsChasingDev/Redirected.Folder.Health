@@ -2,6 +2,8 @@
 
 > _"You should PowerShell a way to find broken folder redirections..."_
 
+![Redirection.Check.png](https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/Redirection.Check.png)
+
 ## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> About
 We all love the functionality and idea behind folder redirections on Windows platforms.  The idea of user data on servers is an attractive one, providing both security and backup protection.  At the same time, folder redirection works behind the scenes, allowing users to work on and save data in places they are already familiar with using.
 
