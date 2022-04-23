@@ -1,4 +1,5 @@
 # Redirected Folder Health
+
 > _"You should PowerShell a way to find broken folder redirections..."_
 
 ## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> About
@@ -16,12 +17,12 @@ Taken directly from the comment-based help:
 
 - Returns the Desktop, Documents, and Downloads path for all users logged into the specified machine, SL-COMPUTER-001.  The function is piped to Select-Object so that only the desired object members are shown.
 
-Input
+#### Input
 ```
 Get-RFH -ComputerName 'SL-COMPUTER-001' -Library D,O,W | Select-Object ComputerName,User,Desktop,Documents,Downloads
 ```
 
-Output
+#### Output
 ```
 ComputerName : SL-COMPUTER-001
 User         : Administrator
@@ -38,12 +39,12 @@ Downloads    : \\SL-DC-01\RedirectedFolders\user1\Downloads
 
 - Gets the content of a text file for a list of computer names and runs the cmdlet against those machines.  The Administrator account is excluded from the gathered information by using the -ExcludeAccount parameter.
 
-Input
+#### Input
 ```
 Get-RFH -ComputerName (Get-Content C:\test\computers.txt) -Library D,O,P -ExcludeAccount Administrator | Select-Object ComputerName,User,Desktop,Documents,Pictures
 ```
 
-Output
+#### Output
 ```
 ComputerName : sl-computer-001
 User         : user1
@@ -60,12 +61,12 @@ Pictures     : C:\Users\user-002\Pictures
 
 - Runs the check using the -ShowHost parameter.  Information about the script's operation and findings are displayed color-coded on the console, and the script returns the object containing its findings at the end.
 
-Input
+#### Input
 ```
 Get-RFH -ComputerName 'SL-COMPUTER-001','SL-COMPUTER-002' -Library D,O -ShowHost | Select-Object ComputerName,User,Desktop,Documents
 ```
 
-Output
+#### Output
 ```
 RFH script started on 12/25/2021 10:52:46.
  Library(ies) being checked:
@@ -92,14 +93,14 @@ SL-COMPUTER-002 User-002      C:\Users\user-002\Desktop                  C:\User
 
 -  The first part of the commnand gets the string formatted names of all computers located in a specific OU.  These names are sent down the pipeline where they are used as input for the -ComputerName parameter of Get-RFH.  Get-RFH checks each of those computers for the Desktop, Documents, Music, Pictures, and Video library paths of any logged in user and writes only results where a path is not redirected to a log file.  The log file is then sent as an attachment in an email report and then deleted from disk.
 
-Input
+#### Input
 ```
 (Get-ADComputer -Filter * -SearchBase 'OU=SL_Computers,OU=SavyLabs,DC=savylabs,DC=local').Name | Get-RFH -Library D,O,M,P,V -LogError C:\test\errors.csv -SendEmail user@mycompany.com -From no-reply@mycompany.com -SmtpServer mail.mycompany.com -Port 25
 ```
 
 - Checks a number of libraries for users on an RDS server to look for redirection problems and send them to a supervisor for review.
 
-Input
+#### Input
 ```
 Get-RFH -ComputerName SL-RDS-03 -Library D,O,M,P,V,A,W -LogError $env:TEMP\temp.csv -SendEmail boss@mycompany.com -Cc me@mycompany.com -From no-reply@mycompany.com -SmtpServer mail.mycompany.com -Port 25
 ```
