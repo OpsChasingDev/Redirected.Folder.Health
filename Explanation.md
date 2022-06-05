@@ -1,4 +1,4 @@
-# Plain explanation of the RFH script
+# Explanation of the Get-RFH Function
 
 ## Begin
 - Collecting AD User information in a custom object
