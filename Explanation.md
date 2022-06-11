@@ -41,3 +41,4 @@ The script currently operates by getting all enabled user account info in the do
 - host will initiate remote code and gather all the output (collection of custom PS objects)
 - host will then do all logic necessary to return the user desired output
 - create a wrapper for Invoke-Command so users can set a throttle limit on the concurrency
+- get rid of Write-Host options and code entirely
