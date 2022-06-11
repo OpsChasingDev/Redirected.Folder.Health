@@ -33,3 +33,10 @@ The script currently operates by getting all enabled user account info in the do
 - Does "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\" actually match all SIDs with user accounts for the machine?
 - Does "HKU\" load all information about a user account on the machine when accessed from another session?
 - Does "HKLM\SYSTEM\CurrentControlSet\Control\hivelist\" show only logged in users? (we have to only check logged in users)
+
+## Plan Notes for Parallel Operation
+- still only check logged in users (checking any other users on the system may be wasteful as there is no way to know if those user accounts still belong to people actively employed at the organization)
+- only input to remote machines will be what libraries to check
+- only output from remote machines will be a custom PS object with the user/computer/library information
+- host will initiate remote code and gather all the output (collection of custom PS objects)
+- host will then do all logic necessary to return the user desired output
