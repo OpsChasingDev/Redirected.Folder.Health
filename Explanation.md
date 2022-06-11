@@ -20,3 +20,15 @@
 - Responsible for delivering selective output based on what the user specified
 - Also handles email sending
 - Also handles visually segregated results on screen
+
+# Running in Parallel
+
+## Potential Problems
+- Method 1: Sending bulk information to each computer simultaneously (ADUsers and libraries to check)
+- Method 2: Letting each remote machine query AD for users simultaneously
+- Method 3: Find a way to use PowerShell to get logged in users in a deterministic fashion
+
+## Potential Solution
+The script currently operates by getting all enabled user account info in the domain and matching the results of the child items in C:\Users to find the SIDs to check on each computer.  However, it might be possible on each machine to simply get the child items of the HKEY_USERS hive and scan all of them for redirections.  In order for this to work, we need to find answers to the following questions:
+- How can we link an SID to a username on the local machine so that it returns a plain english user account to the script
+
