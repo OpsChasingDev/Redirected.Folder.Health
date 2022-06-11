@@ -40,3 +40,4 @@ The script currently operates by getting all enabled user account info in the do
 - only output from remote machines will be a custom PS object with the user/computer/library information
 - host will initiate remote code and gather all the output (collection of custom PS objects)
 - host will then do all logic necessary to return the user desired output
+- create a wrapper for Invoke-Command so users can set a throttle limit on the concurrency
