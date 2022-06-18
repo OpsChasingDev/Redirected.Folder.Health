@@ -32,7 +32,7 @@
 The script currently operates by getting all enabled user account info in the domain and matching the results of the child items in C:\Users to find the SIDs to check on each computer.  However, it might be possible on each machine to simply get the child items of the HKEY_USERS hive and scan all of them for redirections.  We can bypass the need to make any calls to AD or send bulk user information to remote machines.  In order for this to work, we need to find answers to the following questions:
 - Does "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\" actually match all SIDs with user accounts for the machine? **YES**
 - Does "HKU\" load all information about all user accounts on the machine when accessed from another session? **NO** (only loads info about logged in users)
-- Does "HKLM\SYSTEM\CurrentControlSet\Control\hivelist\" show only logged in users? (we have to only check logged in users)
+- Does "HKLM\SYSTEM\CurrentControlSet\Control\hivelist\" show only logged in users? (we have to only check logged in users) **YES**
 
 ## Plan Notes for Parallel Operation
 - still only check logged in users (checking any other users on the system may be wasteful as there is no way to know if those user accounts still belong to people actively employed at the organization)
