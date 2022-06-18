@@ -6,7 +6,7 @@ $SID = Get-ChildItem 'REGISTRY::HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersio
 foreach ($s in $SID) {
     $Prof = Get-ItemProperty -Path "REGISTRY::$s" -Name "ProfileImagePath"
     $User = ($Prof.ProfileImagePath.ToString()).Split('\')[-1]
-    $obj = New-[PSCustomObject]@{
+    $obj = [PSCustomObject]@{
         UserSID = $Prof.PSChildName
         UserName = $User
     }
