@@ -161,7 +161,7 @@ Videos          NoteProperty System.String
         Date: 2022-01-11
         Tested with PowerShell versions 3, 4, 5, and 7
     .LINK
-        https://github.com/drummermanrob20/Redirected.Folder.Health
+        https://github.com/opschasingdev/Redirected.Folder.Health
     #>
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [Alias('Get-RFGPO')]
