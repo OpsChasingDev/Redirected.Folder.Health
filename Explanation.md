@@ -1,5 +1,6 @@
 # Explanation of the Get-RFH Function
-
+**NOTE: RFH has been re-factored to run in parallel in the repository
+[RFH.Optimization]([https://](https://github.com/OpsChasingDev/RFH.Optimization))**
 ## Begin
 - Collecting AD User information in a custom object
 - Preparing output formating
