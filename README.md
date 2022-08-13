@@ -5,6 +5,9 @@
 ![Redirection.Check.png](https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/Redirection.Check.png)
 
 ## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> About
+> _**NOTE: A newer, refactored version of this function that included parallel operation is located at
+[RFH.Optimization](https://github.com/OpsChasingDev/RFH.Optimization)**_
+
 We all love the functionality and idea behind folder redirections on Windows platforms.  The idea of user data on servers is an attractive one, providing both security and backup protection.  At the same time, folder redirection works behind the scenes, allowing users to work on and save data in places they are already familiar with using.
 
 ## <img src="https://raw.githubusercontent.com/drummermanrob20/Misc/main/resources/shell.prompt.icon2.png" width="25"/> The Problem
