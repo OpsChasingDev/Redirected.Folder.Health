@@ -221,7 +221,7 @@ Video        NoteProperty System.String
         Version: 2.0.0
         Date: 2022-01-11
     .LINK
-        https://github.com/drummermanrob20/Redirected.Folder.Health
+        https://github.com/OpsChasingDev/Redirected.Folder.Health
     #>
     [Cmdletbinding(DefaultParameterSetName = 'General')]
     [Alias('Get-RedirectedFolderHealth')]
